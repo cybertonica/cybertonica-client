@@ -62,8 +62,8 @@ class Client:
             "Authorization" : f'Bearer {self.token}'
         }
 
-        # self.events = Event(self.url,r,self.headers)
-        # self.channels = Channel(self.url,r,self.headers)
-        # self.sub_channels = SubChannel(self.url,r,self.headers)
-        # self.policies = Policy(self.url,r,self.headers)
-        # self.lists = List(self.url,r,self.headers)
+        self.events = Event(self.url,r,self.headers)
+        self.channels = Channel(self.url,r,self.headers)
+        self.sub_channels = SubChannel(self.url,r,self.headers)
+        self.policies = Policy(self.url,r,self.headers)
+        self.lists = List(self.url,r,self.headers)

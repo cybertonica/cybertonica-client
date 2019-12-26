@@ -1,2 +1,2 @@
-# openapi_python_client
+# Open API python client
 

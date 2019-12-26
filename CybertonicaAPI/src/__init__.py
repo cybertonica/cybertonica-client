@@ -1,5 +1,5 @@
 from CybertonicaAPI.src.auth import Auth
 
-__locals__ = [
+__all__ = [
 	'Auth'
 ]

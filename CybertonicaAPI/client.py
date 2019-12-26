@@ -3,12 +3,12 @@ import json
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-from CybertonicaAPI.auth import Auth
-# from CybertonicaAPI.src.events       import Event
-# from CybertonicaAPI.src.channels     import Channel
-# from CybertonicaAPI.src.sub_channels import SubChannel
-# from CybertonicaAPI.src.policies     import Policy
-# from CybertonicaAPI.src.lists        import List #include Item
+from CybertonicaAPI.auth         import Auth
+from CybertonicaAPI.events       import Event
+from CybertonicaAPI.channels     import Channel
+from CybertonicaAPI.sub_channels import SubChannel
+from CybertonicaAPI.policies     import Policy
+from CybertonicaAPI.lists        import List #include Item
 
 def r(method=None,url=None,body=None,headers=None,files=None):
     '''

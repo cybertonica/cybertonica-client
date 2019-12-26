@@ -3,7 +3,7 @@ import json
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-import Auth
+from CybertonicaAPI.src.auth import Auth
 # from CybertonicaAPI.src.events       import Event
 # from CybertonicaAPI.src.channels     import Channel
 # from CybertonicaAPI.src.sub_channels import SubChannel

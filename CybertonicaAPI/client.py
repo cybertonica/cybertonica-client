@@ -3,12 +3,12 @@ import json
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-from CybertonicaAPI.src.auth         import Auth
-from CybertonicaAPI.src.events       import Event
-from CybertonicaAPI.src.channels     import Channel
-from CybertonicaAPI.src.sub_channels import SubChannel
-from CybertonicaAPI.src.policies     import Policy
-from CybertonicaAPI.src.lists        import List #include Item
+import Auth
+# from CybertonicaAPI.src.events       import Event
+# from CybertonicaAPI.src.channels     import Channel
+# from CybertonicaAPI.src.sub_channels import SubChannel
+# from CybertonicaAPI.src.policies     import Policy
+# from CybertonicaAPI.src.lists        import List #include Item
 
 def r(method=None,url=None,body=None,headers=None,files=None):
     '''
@@ -62,8 +62,8 @@ class Client:
             "Authorization" : f'Bearer {self.token}'
         }
 
-        self.events = Event(self.url,r,self.headers)
-        self.channels = Channel(self.url,r,self.headers)
-        self.sub_channels = SubChannel(self.url,r,self.headers)
-        self.policies = Policy(self.url,r,self.headers)
-        self.lists = List(self.url,r,self.headers)
+        # self.events = Event(self.url,r,self.headers)
+        # self.channels = Channel(self.url,r,self.headers)
+        # self.sub_channels = SubChannel(self.url,r,self.headers)
+        # self.policies = Policy(self.url,r,self.headers)
+        # self.lists = List(self.url,r,self.headers)

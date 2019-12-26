@@ -1,4 +1,4 @@
-from flybridge.client import Client
+from CybertonicaAPI.client import Client
 
 __all__ = [
         'Client'

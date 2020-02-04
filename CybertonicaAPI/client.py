@@ -10,7 +10,7 @@ from CybertonicaAPI.sub_channels import SubChannel
 from CybertonicaAPI.policies     import Policy
 from CybertonicaAPI.lists        import List #include Item
 
-def r(method=None,url=None,body=None,headers=None,files=None):
+def r(method=None,url=None,body=None,headers=None,files=None, verify=True):
     '''
     Main function for the sending requests
 
@@ -23,7 +23,7 @@ def r(method=None,url=None,body=None,headers=None,files=None):
     :return: status code and JSON(if there is else None)
     :rtype: couple
     '''
-    r = requests.request(method=method,url=url,data=body,headers=headers,files=files)
+    r = requests.request(method=method,url=url,data=body,headers=headers,files=files, verify=verify)
     json = None
     try:
         json = r.json()
@@ -48,22 +48,47 @@ class Client:
     :param password: user password
     :type password: str
     '''
-    def __init__(self, scheme, host, key, team, login, password):
+    def __init__(self, scheme, host, key, team, login, password, auto_auth=True):
         self.url  = f'{scheme}://{host}'
 
         self.auth = Auth(self.url,r)
-
-        self.token    = self.auth.login(login,team,password)[1]['token']
-        self.headers  = {
+        self.token = None
+        self.headers = {
             'content-type'  : 'application/json;charset=utf-8',
             'apiUserId'     : team,
             'apiSignature'  : key,
             'Connection'    :  'keep-alive',
-            "Authorization" : f'Bearer {self.token}'
+            'Authorization' : f'Bearer {str(self.token)}'
         }
+        if auto_auth:
+            self.token =  self.auth.login(login,team,password)[1]['token']
+            self.headers['Authorization'] =f'Bearer {self.token}'
+        
 
         self.events = Event(self.url,r,self.headers)
         self.channels = Channel(self.url,r,self.headers)
         self.sub_channels = SubChannel(self.url,r,self.headers)
         self.policies = Policy(self.url,r,self.headers)
         self.lists = List(self.url,r,self.headers)
+
+    def create_new_team(team='integrtest', login='user', password, custom_body={}):
+
+        body = {
+            "team": team,
+            "password": password,
+            "firstName": "Apogee",
+            "lastName": "System",
+            "email": "ochaplashkin@cybertonica.com",
+            "login": "user"
+        }
+        if custom_body:
+            body = custom_body
+
+        headers = {
+            'Authorization': 'Bearer 123',
+            'Content-type': 'application/json'
+        }
+        url = f'{self.url}/api/v1/team'
+
+        return r(method='POST',url=self.url,body=json.dumps(body),headers=headers,verify=False)
+    

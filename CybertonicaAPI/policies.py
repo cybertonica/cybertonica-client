@@ -40,6 +40,15 @@ class Policy:
         data = None
         return self.do('GET',url,data,headers)
 
+    def get_by_name(self,name):
+        policies = json.loads(self.get_all())
+        target = None
+        for i in policies:
+            if i['name'] == name:
+                target = i
+                break
+        return target
+
     def create(self,data):
         '''
         Create policy

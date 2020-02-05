@@ -71,7 +71,7 @@ class Client:
         self.policies = Policy(self.url,r,self.headers)
         self.lists = List(self.url,r,self.headers)
 
-    def create_new_team(team='integrtest', login='user', password, custom_body={}):
+    def create_new_team(self,team, login, password, custom_body={}):
 
         body = {
             "team": team,
@@ -91,4 +91,3 @@ class Client:
         url = f'{self.url}/api/v1/team'
 
         return r(method='POST',url=self.url,body=json.dumps(body),headers=headers,verify=False)
-    

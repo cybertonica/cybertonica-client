@@ -10,7 +10,7 @@ from CybertonicaAPI.sub_channels import SubChannel
 from CybertonicaAPI.policies     import Policy
 from CybertonicaAPI.lists        import List #include Item
 
-
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def r(method=None,url=None,body=None,headers=None,files=None, verify=True):
     '''

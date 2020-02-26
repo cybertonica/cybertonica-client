@@ -1,7 +1,9 @@
 import json
 
 import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) #ignore SSL certificates
 
 from CybertonicaAPI.auth         import Auth
 from CybertonicaAPI.events       import Event
@@ -10,7 +12,6 @@ from CybertonicaAPI.sub_channels import SubChannel
 from CybertonicaAPI.policies     import Policy
 from CybertonicaAPI.lists        import List #include Item
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def r(method=None,url=None,body=None,headers=None,files=None, verify=True):
     '''

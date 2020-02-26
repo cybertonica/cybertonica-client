@@ -10,6 +10,8 @@ from CybertonicaAPI.sub_channels import SubChannel
 from CybertonicaAPI.policies     import Policy
 from CybertonicaAPI.lists        import List #include Item
 
+
+
 def r(method=None,url=None,body=None,headers=None,files=None, verify=True):
     '''
     Main function for the sending requests
@@ -48,10 +50,10 @@ class Client:
     :param password: user password
     :type password: str
     '''
-    def __init__(self, scheme, host, key, team, login, password, auto_auth=True):
+    def __init__(self, scheme, host, key, team, login, password, auto_auth=True, verify=True):
         self.url  = f'{scheme}://{host}'
 
-        self.auth = Auth(self.url,r)
+        self.auth = Auth(self.url,r,verify)
         self.token = None
         self.headers = {
             'content-type'  : 'application/json;charset=utf-8',

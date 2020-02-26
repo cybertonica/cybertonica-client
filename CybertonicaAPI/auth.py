@@ -11,11 +11,12 @@ class Auth:
     :type do: function
 
     '''
-    def __init__(self,url,do):
+    def __init__(self,url,do,verify):
         assert (isinstance(do, FunctionType) or isinstance(do, LambdaType))
         assert isinstance(url,str) and url
         self.do = do
         self.base_url = url
+        self.verify = verify
 
     def login(self, api_user, team, api_user_key_hash):
         '''
@@ -39,7 +40,7 @@ class Auth:
             "apiUserKeyHash" :api_user_key_hash
         })
         headers = {"content-type" : "application/json"}
-        return self.do('POST',url,data,headers)
+        return self.do('POST',url,data,headers,verify=self.verify)
 
     def logout(self,token):
         '''
@@ -56,7 +57,7 @@ class Auth:
             "content-type" : "application/json",
             "Authorization": f"Bearer {token}"}
         data = None
-        return self.do('POST',url,data,headers)
+        return self.do('POST',url,data,headers,verify=self.verify)
 
     def recovery(self,team,email):
         '''
@@ -73,7 +74,7 @@ class Auth:
         url = f'{self.base_url}/api/v1/recovery/{team}/{email}'
         headers = {"content-type" : "application/json"}
         data = None
-        return self.do('GET',url,data,headers)
+        return self.do('GET',url,data,headers,verify=self.verify)
 
     def register(self,data):
         '''
@@ -92,7 +93,7 @@ class Auth:
         if "updatedAt" not in data:
             data["updatedAt"] = 0
         data = json.dumps(data)
-        return self.do('POST',url,data,headers)
+        return self.do('POST',url,data,headers,verify=self.verify)
 
     def create_team(self,data,token):
         '''
@@ -112,4 +113,4 @@ class Auth:
             "Authorization": "Bearer " + token
         }
         data = json.dumps(data)
-        return self.do('POST',url,data,headers)
+        return self.do('POST',url,data,headers,verify=self.verify)

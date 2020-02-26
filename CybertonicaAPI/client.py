@@ -71,7 +71,7 @@ class Client:
         self.channels = Channel(self.url,r,self.headers)
         self.sub_channels = SubChannel(self.url,r,self.headers)
         self.policies = Policy(self.url,r,self.headers)
-        self.lists = List(self.url,r,self.headers)
+        self.lists = List(self.url,r,self.headers, verify)
 
     def create_new_team(self,team, login, password, custom_body={}):
 

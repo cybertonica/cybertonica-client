@@ -11,12 +11,13 @@ class List:
     '''
 
 
-    def __init__(self, url, do, headers):
+    def __init__(self, url, do, headers, verify):
         self.base_url = url
         self.do = do
         self.headers = headers
+        self.verify = verify
 
-        self.items = Item(url,do,headers)
+        self.items = Item(url,do,headers,self.verify)
 
     def get_all(self):
         '''
@@ -28,7 +29,7 @@ class List:
         url = f'{self.base_url}/api/v1/lists'
         headers = self.headers
         data = None
-        return self.do('GET',url,data,headers)
+        return self.do('GET',url,data,headers,verify=self.verify)
 
     def get_by_id(self, id):
         '''
@@ -43,7 +44,7 @@ class List:
         url = f'{self.base_url}/api/v1/lists/{id}'
         headers = self.headers
         data = None
-        return self.do('GET',url,data,headers)
+        return self.do('GET',url,data,headers,verify=self.verify)
 
     def create(self, data):
         '''
@@ -58,7 +59,7 @@ class List:
         url = f'{self.base_url}/api/v1/lists'
         headers = self.headers
         data = json.dumps(data)
-        return self.do('POST',url,data,headers)
+        return self.do('POST',url,data,headers,verify=self.verify)
 
     def update(self, id, data):
         '''
@@ -75,7 +76,7 @@ class List:
         url = f'{self.base_url}/api/v1/lists/{id}'
         headers = self.headers
         data = json.dumps(data)
-        return self.do('PUT',url,data,headers)
+        return self.do('PUT',url,data,headers,verify=self.verify)
 
     def remove(self, id):
         '''
@@ -90,7 +91,7 @@ class List:
         url = f'{self.base_url}/api/v1/lists/{id}'
         headers = self.headers
         data = None
-        return self.do('DELETE',url,data,headers)
+        return self.do('DELETE',url,data,headers,verify=self.verify)
 
     def import_csv(self, id, csv_file):
         '''
@@ -108,7 +109,7 @@ class List:
         headers = self.headers
         files = {'file': open(csv_file,'rb')}
         data = None
-        return self.do('POST',url,data,headers,files)
+        return self.do('POST',url,data,headers,files,verify=self.verify)
 
     def export_csv(self, id, output):
         '''
@@ -151,10 +152,11 @@ class Item:
     :param do: function 'r', that sends requests (see ../client.py)
     :type do: function
     '''
-    def __init__(self, url, do, headers):
+    def __init__(self, url, do, headers, verify):
         self.base_url = url
         self.do = do
         self.headers = headers
+        self.verify = verify
 
     def get_all(self, lid):
         '''
@@ -169,7 +171,7 @@ class Item:
         url = f'{self.base_url}/api/v1/items/{lid}'
         headers = self.headers
         data = None
-        return self.do('GET',url,data,headers)
+        return self.do('GET',url,data,headers,verify=self.verify)
 
     def get_by_id(self, lid, id):
         '''
@@ -186,7 +188,7 @@ class Item:
         url = f'{self.base_url}/api/v1/items/{lid}/item/{id}'
         headers = self.headers
         data = None
-        return self.do('GET',url,data,headers)
+        return self.do('GET',url,data,headers,verify=self.verify)
 
     def get_all_alive(self, lid):
         '''
@@ -201,7 +203,7 @@ class Item:
         url = f'{self.base_url}/api/v1/items/{lid}/alive'
         headers = self.headers
         data = None
-        return self.do('GET',url,data,headers)
+        return self.do('GET',url,data,headers,verify=self.verify)
 
     def create(self, data):
         '''
@@ -216,7 +218,7 @@ class Item:
         url = f'{self.base_url}/api/v1/items'
         headers = self.headers
         data = json.dumps(data)
-        return self.do('POST',url,data,headers)
+        return self.do('POST',url,data,headers,verify=self.verify)
 
     def update(self, id, data):
         '''
@@ -233,7 +235,7 @@ class Item:
         url = f'{self.base_url}/api/v1/items/{id}'
         headers = self.headers
         data = json.dumps(data)
-        return self.do('PUT',url,data,headers)
+        return self.do('PUT',url,data,headers,verify=self.verify)
 
     def remove(self,id):
         '''
@@ -248,4 +250,4 @@ class Item:
         url = f'{self.base_url}/api/v1/items/{id}'
         headers = self.headers
         data = None
-        return self.do('DELETE',url,data,headers)
+        return self.do('DELETE',url,data,headers,verify=self.verify)

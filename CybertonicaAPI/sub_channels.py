@@ -10,10 +10,11 @@ class SubChannel:
     :type do: function
     '''
 
-    def __init__(self,url,do,headers):
+    def __init__(self,url,do,headers,verfiy):
         self.do = do
         self.base_url = url
         self.headers = headers
+        self.verify = verfiy
 
     def get_all(self):
         '''
@@ -25,7 +26,7 @@ class SubChannel:
         url = f'{self.base_url}/api/v1/subChannels'
         headers = self.headers
         data = None
-        return self.do('GET', url, data, headers)
+        return self.do('GET', url, data, headers, verify=self.verify)
 
     def get(self,id):
         '''
@@ -40,7 +41,7 @@ class SubChannel:
         url = f'{self.base_url}/api/v1/subChannels/{id}'
         headers = self.headers
         data = None
-        return self.do('GET', url, data, headers)
+        return self.do('GET', url, data, headers, verify=self.verify)
 
     def create(self,data):
         '''
@@ -55,7 +56,7 @@ class SubChannel:
         url = f'{self.base_url}/api/v1/subChannels'
         headers = self.headers
         data = json.dumps(data)
-        return self.do('POST', url, data, headers)
+        return self.do('POST', url, data, headers, verify=self.verify)
 
     def update(self,id,data):
         '''
@@ -72,7 +73,7 @@ class SubChannel:
         url = f'{self.base_url}/api/v1/subChannels/{id}'
         headers = self.headers
         data = json.dumps(data)
-        return self.do('PUT', url, data, headers)
+        return self.do('PUT', url, data, headers, verify=self.verify)
 
 
     def remove(self,id):
@@ -88,4 +89,4 @@ class SubChannel:
         url = f'{self.base_url}/api/v1/subChannels/{id}'
         headers = self.headers
         data = None
-        return self.do('DELETE', url, data, headers)
+        return self.do('DELETE', url, data, headers, verify=self.verify)

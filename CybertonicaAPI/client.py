@@ -70,7 +70,7 @@ class Client:
 
         self.events = Event(self.url,r,self.headers)
         self.channels = Channel(self.url,r,self.headers)
-        self.sub_channels = SubChannel(self.url,r,self.headers)
+        self.sub_channels = SubChannel(self.url,r,self.headers, verify)
         self.policies = Policy(self.url,r,self.headers)
         self.lists = List(self.url,r,self.headers, verify)
 

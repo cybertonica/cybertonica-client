@@ -108,7 +108,7 @@ class Client:
         url += f'/{target_user_id}'
         user_data["roles"] = ["FraudChiefOfficer"]
 
-        status, data = r(method='PUT', url=url, body=json.dumps(duser_data), headers=headers, verify=self.verify)
+        status, data = r(method='PUT', url=url, body=json.dumps(user_data), headers=headers, verify=self.verify)
 
         self.auth.logout(self.token)
         self.auth.login(user_data['login'],user_data['team'],user_data['password'])

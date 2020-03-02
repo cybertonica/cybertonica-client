@@ -10,11 +10,11 @@ class SubChannel:
     :type do: function
     '''
 
-    def __init__(self,url,do,headers,verfiy):
+    def __init__(self,url,do,headers,verify):
         self.do = do
         self.base_url = url
         self.headers = headers
-        self.verify = verfiy
+        self.verify = verify
 
     def get_all(self):
         '''

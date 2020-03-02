@@ -53,6 +53,7 @@ class Client:
     '''
     def __init__(self, scheme, host, key, team, login, password, auto_auth=True, verify=True):
         self.url  = f'{scheme}://{host}'
+        self.verify = verify
 
         self.auth = Auth(self.url,r,verify)
         self.token = None
@@ -93,4 +94,30 @@ class Client:
         }
         url = f'{self.url}/api/v1/team'
 
-        return r(method='POST',url=self.url,body=json.dumps(body),headers=headers,verify=False)
+        return r(method='POST',url=self.url,body=json.dumps(body),headers=headers,verify=self.verify)
+    
+    def set_role_for_apogee_user(self, user_data):
+        '''
+        '''
+        url = f'{self.url}/api/v1/users'
+        headers = self.headers
+
+        status, data = r(method='GET', url=url, headers=headers, verify=self.verify)
+
+        target_user_id = json.loads(data)[0]['id']
+        url += f'/{target_user_id}'
+        user_data["roles"] = ["FraudChiefOfficer"]
+
+        status, data = r(method='PUT', url=url, body=json.dumps(duser_data), headers=headers, verify=self.verify)
+
+        self.auth.logout(self.token)
+        self.auth.login(user_data['login'],user_data['team'],user_data['password'])
+
+        
+
+        
+
+
+
+
+

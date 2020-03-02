@@ -106,7 +106,7 @@ class Client:
 
         target_user_id = data[0]['id']
         url += f'/{target_user_id}'
-        user_data["roles"] = ["FraudChiefOfficer"]
+        target_user_id["roles"] = ["FraudChiefOfficer"]
 
         status, data = r(method='PUT', url=url, body=json.dumps(user_data), headers=headers, verify=self.verify)
 

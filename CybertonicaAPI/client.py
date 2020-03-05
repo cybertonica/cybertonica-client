@@ -104,8 +104,8 @@ class Client:
 
         status, data = r(method='GET', url=url, headers=headers, verify=self.verify)
 
-        target_user = json.loads(data)
-        url += f'/{target_user[0]["id"]}'
+        target_user = data[0]
+        url += f'/{target_user["id"]}'
 
         target_user["roles"] = ["FraudChiefOfficer"]
 

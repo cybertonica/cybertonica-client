@@ -104,11 +104,12 @@ class Client:
 
         status, data = r(method='GET', url=url, headers=headers, verify=self.verify)
 
-        target_user_id = json.loads(data[0]['id'])
-        url += f'/{target_user_id}'
-        target_user_id["roles"] = ["FraudChiefOfficer"]
+        target_user = json.loads(data)
+        url += f'/{target_user[0]["id"]}'
 
-        status, data = r(method='PUT', url=url, body=json.dumps(user_data), headers=headers, verify=self.verify)
+        target_user["roles"] = ["FraudChiefOfficer"]
+
+        status, data = r(method='PUT', url=url, body=json.dumps(target_user), headers=headers, verify=self.verify)
 
         self.auth.logout(self.token)
         self.auth.login(user_data['login'],user_data['team'],user_data['password'])

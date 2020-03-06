@@ -90,16 +90,15 @@ class Client:
         '''
         '''
         url = f'{self.url}/api/v1/users'
-        headers = self.headers
 
-        status, data = r(method='GET', url=url, headers=headers, verify=self.verify)
+        status, data = r(method='GET', url=url, verify=self.verify)
 
         target_user = data[0]
         url += f'/{target_user["id"]}'
 
         target_user["roles"] = ["FraudChiefOfficer"]
 
-        status, data = r(method='PUT', url=url, body=json.dumps(target_user), headers=headers, verify=self.verify)
+        status, data = r(method='PUT', url=url, body=json.dumps(target_user), verify=self.verify)
 
 
 if __name__ == "__main__":

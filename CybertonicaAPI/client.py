@@ -12,27 +12,13 @@ from CybertonicaAPI.sub_channels import SubChannel
 from CybertonicaAPI.policies     import Policy
 from CybertonicaAPI.lists        import List #include Item
 
-
-def r(method=None,url=None,body=None,headers=None,files=None, verify=True):
-    '''
-    Main function for the sending requests
-
-    :param method: request's method (GET,POST,PUT, etc)
-    :type methpd: str
-    :param url: URL (<scheme>://<host>/<endpoint>..)
-    :type url: str
-    :param body: request's data (result after json.dumps())
-    :type body: str
-    :return: status code and JSON(if there is else None)
-    :rtype: couple
-    '''
-    r = requests.request(method=method,url=url,data=body,headers=headers,files=files, verify=verify)
-    json = None
-    try:
-        json = r.json()
-    except: ##TODO: implemented raising Exceptions
-        pass
-    return (r.status_code,json)
+#local imports:
+# from auth         import Auth
+# from events       import Event
+# from channels     import Channel
+# from sub_channels import SubChannel
+# from policies     import Policy
+# from lists        import List #include Item
 
 class Client:
     '''
@@ -51,50 +37,54 @@ class Client:
     :param password: user password
     :type password: str
     '''
-    def __init__(self, scheme, host, key, team, login, password, auto_auth=True, verify=True):
+    def __init__(self, scheme, host, team, key, verify=True):
         self.url  = f'{scheme}://{host}'
         self.verify = verify
-
-        self.auth = Auth(self.url,r,verify)
-        self.token = None
-        self.headers = {
-            'content-type'  : 'application/json;charset=utf-8',
-            'apiUserId'     : team,
-            'apiSignature'  : key,
-            'Connection'    :  'keep-alive',
-            'Authorization' : f'Bearer {str(self.token)}'
-        }
-        if auto_auth:
-            self.token =  self.auth.login(login,team,password)[1]['token']
-            self.headers['Authorization'] =f'Bearer {self.token}'
+        self.token = ''
+        self.team = team
+        self.signature = key
         
+        self.auth = Auth(self)
+        self.sub_channels = SubChannel(self)
+        
+        # self.events = Event(self.url, r, self.verify)
+        # self.channels = Channel(self.url, r, self.verify)
+        # self.sub_channels = SubChannel(self.url, r, self.verify)
+        # self.policies = Policy(self.url, r, self.verify)
+        # self.lists = List(self.url, r, self.verify)
 
-        self.events = Event(self.url,r,self.headers)
-        self.channels = Channel(self.url,r,self.headers)
-        self.sub_channels = SubChannel(self.url,r,self.headers, verify)
-        self.policies = Policy(self.url,r,self.headers, verify)
-        self.lists = List(self.url,r,self.headers, verify)
-
-    def create_new_team(self,team, login, password, custom_body={}):
-
-        body = {
-            "team": team,
-            "password": password,
-            "firstName": "Apogee",
-            "lastName": "System",
-            "email": "ochaplashkin@cybertonica.com",
-            "login": "user"
+    def __create_headers(self):
+        return {
+            'content-type'  : 'application/json;charset=utf-8',
+            'apiUserId'     : self.team,
+            'apiSignature'  : self.signature,
+            'Connection'    :  'keep-alive',
+            'Authorization' : f'Bearer {self.token}'
         }
-        if custom_body:
-            body = custom_body
+    
+    def r(self, method=None, url=None, body=None, headers=None, files=None, verify=True):
+        '''
+        Main function for the sending requests
 
-        headers = {
-            'Authorization': 'Bearer 123',
-            'Content-type': 'application/json'
-        }
-        url = f'{self.url}/api/v1/team'
+        :param method: request's method (GET,POST,PUT, etc)
+        :type methpd: str
+        :param url: URL (<scheme>://<host>/<endpoint>..)
+        :type url: str
+        :param body: request's data (result after json.dumps())
+        :type body: str
+        :return: status code and JSON(if there is it else json=None)
+        :rtype: couple
+        '''
+        if not headers:
+            headers = self.__create_headers()
 
-        return r(method='POST',url=self.url,body=json.dumps(body),headers=headers,verify=self.verify)
+        r = requests.request(method=method,url=url,data=body,headers=headers,files=files, verify=verify)
+        json = None
+        try:
+            json = r.json()
+        except: ##TODO: implemented raising Exceptions
+            pass
+        return (r.status_code,json)
     
     def set_role_for_apogee_user(self, user_data):
         '''
@@ -111,8 +101,14 @@ class Client:
 
         status, data = r(method='PUT', url=url, body=json.dumps(target_user), headers=headers, verify=self.verify)
 
-        self.auth.logout(self.token)
-        self.auth.login(user_data['login'],user_data['team'],user_data['password'])
+
+if __name__ == "__main__":
+    pass
+
+
+
+
+        
 
         
 

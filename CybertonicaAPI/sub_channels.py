@@ -3,18 +3,10 @@ import json
 class SubChannel:
     '''
     Sub-channel class
-
-    :param url: base url (see ../client.py)
-    :type url: str
-    :param do: function 'r', that sends requests (see ../client.py)
-    :type do: function
     '''
 
-    def __init__(self,url,do,headers,verify):
-        self.do = do
-        self.base_url = url
-        self.headers = headers
-        self.verify = verify
+    def __init__(self, root):
+        self.root = root
 
     def get_all(self):
         '''
@@ -23,12 +15,10 @@ class SubChannel:
         Method: GET
         Endpoint: /api/v1/subChannels
         '''
-        url = f'{self.base_url}/api/v1/subChannels'
-        headers = self.headers
-        data = None
-        return self.do('GET', url, data, headers, verify=self.verify)
+        url = f'{self.root.url}/api/v1/subChannels'
+        return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
-    def get(self,id):
+    def get_by_id(self,id):
         '''
         Get sub-channel by ID
 
@@ -38,11 +28,28 @@ class SubChannel:
         :param id: sub-channel's ID
         :type id: str
         '''
-        url = f'{self.base_url}/api/v1/subChannels/{id}'
-        headers = self.headers
-        data = None
-        return self.do('GET', url, data, headers, verify=self.verify)
+        url = f'{self.root.url}/api/v1/subChannels/{str(id)}'
+        return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
+    
+    def search_by(self, key, value):
+        '''
+        Search sub-channel by key with value
 
+        :param key: 
+        :type key: str
+        :param value: 
+        :type value: str or int
+        '''
+        status_code, subchannels = self.get_all()
+        if status_code >= 400:
+            return (status_code, subchannels)
+    
+        for channel in subchannels:
+            if key in channel:
+                if channel[key] == value:
+                    return (True, channel)
+        return (False, None)
+    
     def create(self,data):
         '''
         Creating sub-channel by data
@@ -53,10 +60,9 @@ class SubChannel:
         :param data: data of new sub-channel
         :type data: dict
         '''
-        url = f'{self.base_url}/api/v1/subChannels'
-        headers = self.headers
+        url = f'{self.root.url}/api/v1/subChannels'
         data = json.dumps(data)
-        return self.do('POST', url, data, headers, verify=self.verify)
+        return self.root.r('POST', url, data, headers=None, verify=self.root.verify)
 
     def update(self,id,data):
         '''
@@ -70,13 +76,11 @@ class SubChannel:
         :param data: new data for the sub-channel
         :type data: dict
         '''
-        url = f'{self.base_url}/api/v1/subChannels/{id}'
-        headers = self.headers
+        url = f'{self.root.url}/api/v1/subChannels/{id}'
         data = json.dumps(data)
-        return self.do('PUT', url, data, headers, verify=self.verify)
+        return self.root.r('PUT', url, data, headers=None, verify=self.root.verify)
 
-
-    def remove(self,id):
+    def delete(self,id):
         '''
         Removing sub-channel by ID
 
@@ -86,7 +90,5 @@ class SubChannel:
         :param id: sub-channel's ID
         :type id: str
         '''
-        url = f'{self.base_url}/api/v1/subChannels/{id}'
-        headers = self.headers
-        data = None
-        return self.do('DELETE', url, data, headers, verify=self.verify)
+        url = f'{self.root.url}/api/v1/subChannels/{str(id)}'
+        return self.root.r('DELETE', url, body=None, headers=None, verify=self.root.verify)

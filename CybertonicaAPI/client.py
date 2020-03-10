@@ -8,17 +8,11 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) #ignore SSL 
 from CybertonicaAPI.auth         import Auth
 from CybertonicaAPI.events       import Event
 from CybertonicaAPI.channels     import Channel
-from CybertonicaAPI.sub_channels import SubChannel
+from CybertonicaAPI.subchannels  import SubChannel
 from CybertonicaAPI.policies     import Policy
 from CybertonicaAPI.lists        import List #include Item
 
-#local imports:
-# from auth         import Auth
-# from events       import Event
-# from channels     import Channel
-# from subchannels import SubChannel
-# from policies     import Policy
-# from lists        import List #include Item
+
 
 class Client:
     '''

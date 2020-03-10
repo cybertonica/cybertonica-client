@@ -16,7 +16,7 @@ from CybertonicaAPI.lists        import List #include Item
 # from auth         import Auth
 # from events       import Event
 # from channels     import Channel
-# from sub_channels import SubChannel
+# from subchannels import SubChannel
 # from policies     import Policy
 # from lists        import List #include Item
 
@@ -45,13 +45,14 @@ class Client:
         self.signature = key
         
         self.auth = Auth(self)
-        self.sub_channels = SubChannel(self)
+        self.subchannels = SubChannel(self)
+        self.lists = List(self)
         
         # self.events = Event(self.url, r, self.verify)
         # self.channels = Channel(self.url, r, self.verify)
         # self.sub_channels = SubChannel(self.url, r, self.verify)
         # self.policies = Policy(self.url, r, self.verify)
-        # self.lists = List(self.url, r, self.verify)
+        
 
     def __create_headers(self):
         return {
@@ -100,9 +101,10 @@ class Client:
 
         status, data = self.r(method='PUT', url=url, body=json.dumps(target_user), verify=self.verify)
 
-
 if __name__ == "__main__":
     pass
+
+
 
 
 

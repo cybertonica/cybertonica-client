@@ -10,7 +10,7 @@ from CybertonicaAPI.channels     import Channel
 from CybertonicaAPI.subchannels  import SubChannel
 from CybertonicaAPI.policies     import Policy
 from CybertonicaAPI.lists        import List #include Item
-from cybertonicaAPI.users        import User
+from CybertonicaAPI.users        import User
 
 class Client:
     '''
@@ -96,20 +96,3 @@ class Client:
 
 if __name__ == "__main__":
     pass
-    
-
-
-
-
-
-
-        
-
-        
-
-        
-
-
-
-
-

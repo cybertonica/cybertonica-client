@@ -28,7 +28,7 @@ class User:
         :param id: user's ID
         :type id: str
         '''
-        url = f'{self.root.url}/api/v1/subChannels/{str(id)}'
+        url = f'{self.root.url}/api/v1/users/{str(id)}'
         return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
     
     def create(self,data):
@@ -71,5 +71,5 @@ class User:
         :param id: user's ID
         :type id: str
         '''
-        url = f'{self.root.url}/api/v1/subChannels/{str(id)}'
+        url = f'{self.root.url}/api/v1/users/{str(id)}'
         return self.root.r('DELETE', url, body=None, headers=None, verify=self.root.verify)

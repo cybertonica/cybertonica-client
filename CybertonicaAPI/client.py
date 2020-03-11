@@ -2,7 +2,6 @@ import json
 
 import requests
 import urllib3
-
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) #ignore SSL certificates
 
 from CybertonicaAPI.auth         import Auth
@@ -11,8 +10,7 @@ from CybertonicaAPI.channels     import Channel
 from CybertonicaAPI.subchannels  import SubChannel
 from CybertonicaAPI.policies     import Policy
 from CybertonicaAPI.lists        import List #include Item
-
-
+from cybertonicaAPI.users        import User
 
 class Client:
     '''
@@ -41,6 +39,7 @@ class Client:
         self.auth = Auth(self)
         self.subchannels = SubChannel(self)
         self.lists = List(self)
+        self.users = User(self)
         
         # self.events = Event(self.url, r, self.verify)
         # self.channels = Channel(self.url, r, self.verify)
@@ -97,6 +96,7 @@ class Client:
 
 if __name__ == "__main__":
     pass
+    
 
 
 

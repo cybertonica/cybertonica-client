@@ -10,11 +10,8 @@ class Policy:
     :type do: function
     '''
 
-    def __init__(self, url, do, headers, verify):
-        self.base_url = url
-        self.do = do
-        self.headers = headers
-        self.verify = verify
+    def __init__(self, root):
+        self.root = root
 
     def get_all(self):
         '''
@@ -24,31 +21,18 @@ class Policy:
         Endpoint: /api/v1/policies
 
         '''
-        url = f'{self.base_url}/api/v1/policies'
-        headers = self.headers
-        data = None
-        return self.do('GET',url,data,headers,verify=self.verify)
+        url = f'{self.root.url}/api/v1/policies'
+        return self.root.r('GET',url,body=None,headers=None,verify=self.root.verify)
 
-    def get(self,id):
+    def get_by_id(self,id):
         '''
         Get policy by ID
 
         Method: GET
         Endpoint: /api/v1/policies/{id}
         '''
-        url = f'{self.base_url}/api/v1/policies/{id}'
-        headers = self.headers
-        data = None
-        return self.do('GET',url,data,headers,verify=self.verify)
-
-    def get_by_name(self,name):
-        policies = json.loads(self.get_all())
-        target = None
-        for i in policies:
-            if i['name'] == name:
-                target = i
-                break
-        return target
+        url = f'{self.root.url}/api/v1/policies/{id}'
+        return self.root.r('GET',url,body=None,headers=None,verify=self.root.verify)
 
     def create(self,data):
         '''
@@ -57,10 +41,9 @@ class Policy:
         Method: POST
         Endpoint: /api/v1/policies
         '''
-        url = f'{self.base_url}/api/v1/policies'
-        headers = self.headers
+        url = f'{self.root.url}/api/v1/policies'
         data = json.dumps(data)
-        return self.do('POST',url,data,headers,verify=self.verify)
+        return self.root.r('POST',url,data,headers=None,verify=self.root.verify)
 
     def update(self,id,data):
         '''
@@ -69,19 +52,16 @@ class Policy:
         Method: PUT
         Endpoint: /api/v1/policies/{id}
         '''
-        url = f'{self.base_url}/api/v1/policies/{id}'
-        headers = self.headers
+        url = f'{self.root.url}/api/v1/policies/{id}'
         data = json.dumps(data)
-        return self.do('PUT',url,data,headers,verify=self.verify)
+        return self.root.r('PUT',url,data,headers=None,verify=self.root.verify)
 
-    def remove(self,id):
+    def delete(self,id):
         '''
         Remove policy by ID
 
         Method: DELETE
         Endpoint: /api/v1/policies/{id}
         '''
-        url = f'{self.base_url}/api/v1/policies/{id}'
-        headers = self.headers
-        data = None
-        return self.do('DELETE',url,data,headers,verify=self.verify)
+        url = f'{self.root.url}/api/v1/policies/{id}'
+        return self.root.r('DELETE',url,body=None,headers=None,verify=self.root.verify)

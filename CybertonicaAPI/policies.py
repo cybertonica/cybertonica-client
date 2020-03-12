@@ -24,7 +24,7 @@ class Policy:
         url = f'{self.root.url}/api/v1/policies'
         return self.root.r('GET',url,body=None,headers=None,verify=self.root.verify)
 
-    def get(self,id):
+    def get_by_id(self,id):
         '''
         Get policy by ID
 
@@ -56,7 +56,7 @@ class Policy:
         data = json.dumps(data)
         return self.root.r('PUT',url,data,headers=None,verify=self.root.verify)
 
-    def remove(self,id):
+    def delete(self,id):
         '''
         Remove policy by ID
 

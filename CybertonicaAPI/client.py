@@ -41,8 +41,8 @@ class Client:
 		self.lists = List(self)
 		self.users = User(self)
 		self.policies = Policy(self)
-		
-		# self.events = Event(self.url, r, self.verify)
+		self.events = Event(self)
+
 		# self.channels = Channel(self.url, r, self.verify)
 
 	def __create_headers(self):

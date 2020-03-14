@@ -9,11 +9,8 @@ class Event:
     :param do: function 'r', that sends requests (see ../client.py)
     :type do: function
     '''
-
-    def __init__(self, url, do, headers):
-        self.base_url = url
-        self.do = do
-        self.headers = headers
+    def __init__(self, root):
+        self.root = root
 
     def get_by_id_and_fk(self,id,fks):
         '''
@@ -22,10 +19,8 @@ class Event:
         Method: GET
         Endpoint: /api/v1/events/?id={id}&fk={fk}
         '''
-        url = f'{self.base_url}/api/v1/events/?id={id}&fk={fks}'
-        headers = self.headers
-        data = None
-        return self.do('GET', url, data, headers)
+        url = f'{self.root.url}/api/v1/events/?id={id}&fk={fks}'
+        return self.root.r('GET', url, body=None, headers=None,verify=self.root.verify)
 
     def get_by_id(self,id):
         '''
@@ -34,10 +29,8 @@ class Event:
         Method: GET
         Endpoint: /api/v1/events/{id}
         '''
-        url = f'{self.base_url}/api/v1/events/{id}'
-        headers = self.headers
-        data = None
-        return self.do('GET', url, data, headers)
+        url = f'{self.root.url}/api/v1/events/{id}'
+        return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
     def get_by_queue(self,queue_name,start=0,limit=100):
         '''
@@ -48,10 +41,8 @@ class Event:
         Method: GET
         Endpoint: /api/v1.1/events/queue/{queue_name}
         '''
-        url = f'{self.base_url}/api/v1.1/events/queue/{queue_name}?start={str(start)}&limit={str(limit)}'
-        headers = self.headers
-        data = None
-        return self.do('GET', url, data, headers)
+        url = f'{self.root.url}/api/v1.1/events/queue/{queue_name}?start={str(start)}&limit={str(limit)}'
+        return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
     def get_by_ids_array(self,ids):
         '''
@@ -60,7 +51,6 @@ class Event:
         Method: POST
         Endpoint: /api/v1/events/{queue}
         '''
-        url = f'{self.base_url}/api/v1/events' #??? #TODO
+        url = f'{self.root.url}/api/v1/events' #??? #TODO
         data = json.dumps(ids)
-        headers = self.headers
-        return self.do('POST',url,data,headers)
+        return self.root.r('POST',url,data,headers=None, verify=self.root.verify)

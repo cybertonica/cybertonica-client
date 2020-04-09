@@ -77,20 +77,6 @@ class Client:
 		except: ##TODO: implemented raising Exceptions
 			pass
 		return (r.status_code,json)
-	
-	def set_role_for_apogee_user(self, user_data):
-		'''
-		'''
-		url = f'{self.url}/api/v1/users'
-
-		status, data = self.r(method='GET', url=url, verify=self.verify)
-
-		target_user = data[0]
-		url += f'/{target_user["id"]}'
-
-		target_user["roles"] = ["FraudChiefOfficer"]
-
-		status, data = self.r(method='PUT', url=url, body=json.dumps(target_user), verify=self.verify)
 
 if __name__ == "__main__":
 	pass

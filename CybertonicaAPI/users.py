@@ -73,3 +73,43 @@ class User:
         '''
         url = f'{self.root.url}/api/v1/users/{str(id)}'
         return self.root.r('DELETE', url, body=None, headers=None, verify=self.root.verify)
+        
+    def add_role(self,id,role):
+		'''
+		Add role to the user
+
+		:param id: user's ID
+		:type id: str
+		:param role: target role (exist in the system), e.g. 'Fraud Support'
+		:type role: str
+		'''
+		assert isinstance(role, str)
+		assert isinstance(id, str)
+
+		status, user = self.get_by_id(id)
+
+		assert status == 200
+		assert role not in user["roles"]
+		
+		user["roles"].append(role) #["FraudChiefOfficer"]
+		return self.update(id, user)
+	
+	def remove_role(self,id,role):
+		'''
+		Remove role from the user
+
+		:param id: user's ID
+		:type id: str
+		:param role: target role (exist in the system), e.g. 'Fraud Support'
+		:type role: str
+		'''
+		assert isinstance(role, str)
+		assert isinstance(id, str)
+
+		status, user = self.get_by_id(id)
+
+		assert status == 200
+		assert role in user["roles"]
+
+		user["roles"].remove(role)
+		return self.update(id, user)

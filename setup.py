@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 setup(name='CybertonicaAPI',
       version='0.1',
       description='Python client for the Cybertonica Open API',
-      url='https://apogee:mksuhAe2cD_ZMT1pdLCA@gitlab.cybertonica.com/ochaplashkin/openapi_python_client.git',
+      url='https://gitlab.cybertonica.com/ochaplashkin/openapi_python_client.git',
       author='Cybertonica Ltd.',
       author_email='support@cybertonica.com',
       license='unlicense',
@@ -22,7 +22,6 @@ setup(name='CybertonicaAPI',
       classifiers=[  
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8'
+        'Programming Language :: Python :: 3.6'
     	]
 )

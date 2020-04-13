@@ -29,21 +29,28 @@ class Client:
 	:param password: user password
 	:type password: str
 	'''
-	def __init__(self, scheme, host, team, key, verify=True):
-		self.url  = f'{scheme}://{host}'
-		self.verify = verify
+	def __init__(self, **settings):
+		assert 'url' in settings , 'url is required parameter'
+		assert 'team' in settings, 'team is required parameter'
+		assert 'api_key' in settings, 'api_key is required parameter'
+
+		self.url  = str(settings['url']) 
+		self.team = str(settings['team']) 
+		self.signature = str(settings['api_key']) 
+		
+		self.verify = bool(settings['verify']) if 'verify' in settings else False
 		self.token = ''
-		self.team = team
-		self.signature = key
 		
 		self.auth = Auth(self)
 		self.subchannels = SubChannel(self)
 		self.lists = List(self)
 		self.users = User(self)
-		self.policies = Policy(self)
-		self.events = Event(self)
-
+		
+		# self.events = Event(self.url, r, self.verify)
 		# self.channels = Channel(self.url, r, self.verify)
+		# self.sub_channels = SubChannel(self.url, r, self.verify)
+		# self.policies = Policy(self.url, r, self.verify)
+		
 
 	def __create_headers(self):
 		return {
@@ -54,7 +61,7 @@ class Client:
 			'Authorization' : f'Bearer {self.token}'
 		}
 	
-	def r(self, method=None, url=None, body=None, headers=None, files=None, verify=True):
+	def r(self, method, url=None, body=None, headers=None, files=None, verify=True):
 		'''
 		Main function for the sending requests
 
@@ -67,8 +74,21 @@ class Client:
 		:return: status code and JSON(if there is it else json=None)
 		:rtype: couple
 		'''
+		assert method , 'method is required parameter'
 		if not headers:
 			headers = self.__create_headers()
+		assert isinstance(headers, dict), 'headers must be a dict'
+		url = url if url else self.url
+
+		r = requests.request(method=str(method),url=str(url),data=str(body),headers=headers,files=files, verify=verify)
+	
+		json = r.json() if 'json' in r.headers['Content-Type'] else None
+		return (r.status_code,json)
+	
+	def set_role_for_apogee_user(self, user_data):
+		'''
+		'''
+		url = f'{self.url}/api/v1/users'
 
 		r = requests.request(method=method,url=url,data=body,headers=headers,files=files, verify=verify)
 		json = None

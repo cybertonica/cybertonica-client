@@ -226,6 +226,3 @@ class TestRegisterMethod(unittest.TestCase):
 	def test_register_with_empty_dict(self):
 		with self.assertRaisesRegex(AssertionError, 'User data must not be an empty dictionary'):
 			self.auth.register({})
-	
-
-

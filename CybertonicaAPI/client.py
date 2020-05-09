@@ -1,7 +1,7 @@
 from CybertonicaAPI.lists import List  # include Item
 from CybertonicaAPI.users import User
 from CybertonicaAPI.policies import Policy
-from CybertonicaAPI.subchannels import SubChannel
+from CybertonicaAPI.subchannels import Subchannel
 from CybertonicaAPI.channels import Channel
 from CybertonicaAPI.events import Event
 from CybertonicaAPI.auth import Auth
@@ -45,7 +45,7 @@ class Client:
         self.token = ''
 
         self.auth = Auth(self)
-        self.subchannels = SubChannel(self)
+        self.subchannels = Subchannel(self)
         self.lists = List(self)
         self.users = User(self)
 

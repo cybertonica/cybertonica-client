@@ -88,20 +88,5 @@ class Client:
         json = r.json() if 'json' in r.headers['Content-Type'] else None
         return (r.status_code, json)
 
-    def set_role_for_apogee_user(self, user_data):
-        '''
-        '''
-        url = f'{self.url}/api/v1/users'
-
-        r = requests.request(method=method, url=url, data=body,
-                             headers=headers, files=files, verify=verify)
-        json = None
-        try:
-            json = r.json()
-        except:  # TODO: implemented raising Exceptions
-            pass
-        return (r.status_code, json)
-
-
 if __name__ == "__main__":
     pass

@@ -8,7 +8,7 @@ from unittest.mock import patch, PropertyMock, Mock, MagicMock
 sys.path.append(os.getcwd())
 
 
-class TestInitPolicyClass(unittest.TestCase):
+class TestInitSubchannelClass(unittest.TestCase):
 
 	def setUp(self):
 		self.subchannels = Subchannel(PropertyMock(

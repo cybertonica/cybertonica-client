@@ -1,5 +1,6 @@
 import json
 from types import FunctionType, LambdaType
+from email.utils import parseaddr
 
 
 class Auth:
@@ -22,6 +23,11 @@ class Auth:
         :param api_user: user's password hash #TODO
         :type api_user: str
         '''
+        assert isinstance(api_user, str), 'The api user must be a string'
+        assert api_user, 'The api user must not be an empty string'
+        assert isinstance(api_user_key_hash, str), 'The api user key hash must be a string'
+        assert api_user_key_hash, 'The api user key hash must not be an empty string'
+
         url = f'{self.root.url}/api/v1/login'
         data = json.dumps({
             "apiUser": api_user,
@@ -46,19 +52,13 @@ class Auth:
         headers = {
             "content-type": "application/json",
             "Authorization": f"Bearer {self.root.token}"}
-        data = None
         status_code, data = self.root.r(
-            'POST', url, data, headers, verify=self.root.verify)
+            'POST', url, headers,body=None, verify=self.root.verify)
         if status_code < 400:
             self.root.token = ''
         return (status_code, data)
 
-    def relogin_as(self, api_user, api_user_key_hash):
-        self.logout()
-        status, data = self.login(api_user, api_user_key_hash)
-        return (status, data)
-
-    def recovery_password(self, email):
+    def recovery_password(self, team, email):
         '''
         Recover password
 
@@ -68,10 +68,15 @@ class Auth:
         :param email: user's email
         :type email: str
         '''
-        url = f'{self.root.url}/api/v1/recovery/request?team={self.root.team}&email={email}'
+        assert isinstance(team, str), 'Team must be a string'
+        assert team, 'Team must not be an empty string'
+        assert isinstance(email, str), 'Email must be a string'
+        assert email, 'Email must not be an empty string'
+        assert '@' in parseaddr(email)[1], 'Email must be valid'
+
+        url = f'{self.root.url}/api/v1/recovery/request?team={team}&email={email}'
         headers = {"content-type": "application/json"}
-        data = None
-        return self.root.r('GET', url, data, headers, verify=self.root.verify)
+        return self.root.r('GET', url, headers,body=None, verify=self.root.verify)
 
     def register(self, data):
         '''
@@ -83,6 +88,9 @@ class Auth:
         :param data: new user data
         :type data: dict
         '''
+        assert isinstance(data, dict), 'The data type must be a dictionary'
+        assert data, 'User data must not be an empty dictionary'
+        
         url = f'{self.root.url}/api/v1/registration'
         headers = {"content-type": "application/json"}
         if "invitedAt" not in data:

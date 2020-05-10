@@ -1,28 +1,18 @@
 import json
 
 class Channel:
-    '''
-    Channel class
+	'''
+	Channel class
+	'''
+	def __init__(self, root):
+		self.root = root
 
-    :param url: base url (see ../client.py)
-    :type url: str
-    :param do: function 'r', that sends requests (see ../client.py)
-    :type do: function
-    '''
+	def get_all(self):
+		'''
+		Get all available channels
 
-    def __init__(self,url,do,headers):
-        self.do = do
-        self.base_url = url
-        self.headers = headers
-
-    def get_all(self):
-        '''
-        Get all available channels
-
-        Method: GET
-        Endpoint: /api/v1/subChannels/channels
-        '''
-        url =  f'{self.base_url}/api/v1/subChannels/channels'
-        headers = self.headers
-        data = None
-        return self.do('GET',url,data,headers)
+		Method: GET
+		Endpoint: /api/v1/subChannels/channels
+		'''
+		url =  f'{self.root.url}/api/v1/subChannels/channels'
+		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)

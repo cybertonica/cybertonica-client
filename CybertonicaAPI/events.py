@@ -66,3 +66,29 @@ class Event:
 	#     url = f'{self.root.url}/api/v1/events' #??? #TODO
 	#     data = json.dumps(ids)
 	#     return self.root.r('POST',url,data,headers=None, verify=self.root.verify)
+
+	def bulk_review(self, ids, comment, status):
+		'''
+		Set opStatus
+
+		Method: PUT
+		Endpoint: /api/v1.2/opStatus/review
+		'''
+		assert isinstance(ids, list), "ID list must be a list of string"
+		assert ids, "ID List must not be an empty list"
+
+		assert isinstance(comment, str), "Comment value must be a string"
+		assert isinstance(status, str), "Status value must be a string"
+
+		assert status in ['Ok', 'Challenge', 'Fraud'], "Status value must be either 'Ok', 'Challenge' or 'Fraud'"
+
+		url = f'{self.root.url}/api/v1.2/opStatus/review' #??? #TODO
+		data = json.dumps({
+			"ids":ids,
+			"comment": comment,
+			"status": status
+		})
+		return self.root.r('PUT',url,data,headers=None, verify=self.root.verify)
+
+	def review(self, id, comment, status):
+		return self.bulk_review([id],comment,status)

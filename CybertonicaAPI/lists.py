@@ -174,24 +174,24 @@ class Item:
 		return self.root.r('GET',url,body=None,headers=None,verify=self.root.verify)
 		
 
-	def get_all_alive(self, list_id):
-		'''
-		Get all alive Items by list
+	# def get_all_alive(self, list_id):
+	# 	'''
+	# 	Get all alive Items by list
 
-		Method: GET
-		Endpoint: /api/v1/items/{list_id}/alive
+	# 	Method: GET
+	# 	Endpoint: /api/v1/items/{list_id}/alive
 
-		:param lid: list id
-		:type id: str
-		'''
-		assert isinstance(list_id, str), "List ID must be a string"
-		assert list_id, "List ID must not be an empty string"
+	# 	:param lid: list id
+	# 	:type id: str
+	# 	'''
+	# 	assert isinstance(list_id, str), "List ID must be a string"
+	# 	assert list_id, "List ID must not be an empty string"
 
-		url = f'{self.root.url}/api/v1/items/{list_id}/alive'
-		return self.root.r('GET',url,body=None,headers=None,verify=self.root.verify)
+	# 	url = f'{self.root.url}/api/v1/items/{list_id}/alive'
+	# 	return self.root.r('GET',url,body=None,headers=None,verify=self.root.verify)
 		
 
-	def create(self, data):
+	def create(self, list_id, data):
 		'''
 		Create item by data
 
@@ -201,15 +201,17 @@ class Item:
 		:param data: new item data
 		:type data: dict
 		'''
+		assert isinstance(list_id, str), "List ID type must be a string"
+		assert list_id, "List ID must not be an empty string"
 		assert isinstance(data, dict), "The data type must be a dictionary"
 		assert data, "Item data must not be an empty dictionary"
 
-		url = f'{self.root.url}/api/v1/items'
+		url = f'{self.root.url}/api/v1/items/{list_id}'
 		data = json.dumps(data)
 		return self.root.r('POST',url,data,headers=None,verify=self.root.verify)
 		
 
-	def update(self, id, data):
+	def update(self, list_id, id, data):
 		'''
 		Update item by id
 
@@ -221,16 +223,20 @@ class Item:
 		:param data: new item data
 		:type data: str
 		'''
+		assert isinstance(list_id, str), "List ID must be a string"
+		assert list_id, "List ID must not be an empty string"
+
 		assert isinstance(id, str), "The ID must be a string"
 		assert id, "The ID must not be an empty string"
+
 		assert isinstance(data, dict), "The data type must be a dictionary"
 		assert data, "Item data must not be an empty dictionary"
 
-		url = f'{self.root.url}/api/v1/items/{id}'
+		url = f'{self.root.url}/api/v1/items/{list_id}/{id}'
 		data = json.dumps(data)
 		return self.root.r('PUT',url,data,headers=None,verify=self.root.verify)
 
-	def delete(self,id):
+	def delete(self,list_id, id):
 		'''
 		Remove item by id
 
@@ -240,8 +246,10 @@ class Item:
 		:param id: item id
 		:type id: str
 		'''
+		assert isinstance(list_id, str), "List ID must be a string"
+		assert list_id, "List ID must not be an empty string"
 		assert isinstance(id, str), "The ID must be a string"
 		assert id, "The ID must not be an empty string"
 		
-		url = f'{self.root.url}/api/v1/items/{id}'
+		url = f'{self.root.url}/api/v1/items/{list_id}/{id}'
 		return self.root.r('DELETE',url,body=None,headers=None,verify=self.root.verify)

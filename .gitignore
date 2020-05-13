@@ -118,3 +118,5 @@ dmypy.json
 
 # PyCharm
 .idea/*
+
+internal_tests.py

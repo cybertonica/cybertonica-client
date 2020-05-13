@@ -25,6 +25,8 @@ class TestInitEventClass(unittest.TestCase):
 
 		self.assertTrue("get_by_id" in dir(self.events))
 		self.assertTrue("get_by_queue" in dir(self.events))
+		self.assertTrue("bulk_review" in dir(self.events))
+		self.assertTrue("review" in dir(self.events))
 
 
 	def test_attributes_inside_auth_object(self):
@@ -123,3 +125,69 @@ class TestGetByQueueMethod(unittest.TestCase):
 	def test_get_by_queue_with_incorrect_limit_value(self):
 		with self.assertRaisesRegex(AssertionError, "The limit value must be in the range \\(0, 1000]"):
 			self.events.get_by_queue(self.queue, self.start, 0)
+
+class TestBulkReviewMethod(unittest.TestCase):
+
+	def setUp(self):
+		self.events = Event(PropertyMock(
+			url='test_url',
+			team='test_team',
+			signature='test_signature',
+			token='old_value',
+			verify=True,
+			r=Mock(return_value=(200, {'token': '123'}))
+		))
+		self.ids = ['test_1', 'test_2']
+		self.comment = "test_comment"
+		self.status = "Challenge"
+
+	def test_bulk_review_request(self):
+		self.events.bulk_review(self.ids, self.comment, self.status)
+		self.events.root.r.assert_called_with(
+			'PUT',
+			f'{self.events.root.url}/api/v1.2/opStatus/review',
+			json.dumps({"ids":self.ids,"comment":self.comment,"status":self.status}),
+			headers=None,
+			verify=self.events.root.verify
+		)
+	
+	def test_bulk_review_with_incorrect_ids_type(self):
+		with self.assertRaisesRegex(AssertionError, "ID list must be a list of string"):
+			self.events.bulk_review(('a','b','c'), self.comment, self.status)
+	
+	def test_bulk_review_with_incorrect_comment_type(self):
+		with self.assertRaisesRegex(AssertionError, "Comment value must be a string"):
+			self.events.bulk_review(self.ids, 123, self.status)
+	
+	def test_bulk_review_with_incorrect_status_type(self):
+		with self.assertRaisesRegex(AssertionError, "Status value must be a string"):
+			self.events.bulk_review(self.ids, self.comment, 123)
+	
+	def test_bulk_review_with_incorrect_status_value(self):
+		with self.assertRaisesRegex(AssertionError, "Status value must be either 'Ok', 'Challenge' or 'Fraud'"):
+			self.events.bulk_review(self.ids, self.comment, 'lalala')
+
+class TestSingleReviewMethod(unittest.TestCase):
+
+	def setUp(self):
+		self.events = Event(PropertyMock(
+			url='test_url',
+			team='test_team',
+			signature='test_signature',
+			token='old_value',
+			verify=True,
+			r=Mock(return_value=(200, {'token': '123'}))
+		))
+		self.id = 'test_id'
+		self.comment = "test_comment"
+		self.status = "Challenge"
+
+	def test_single_review_request(self):
+		self.events.review(self.id, self.comment, self.status)
+		self.events.root.r.assert_called_with(
+			'PUT',
+			f'{self.events.root.url}/api/v1.2/opStatus/review',
+			json.dumps({"ids":[self.id],"comment":self.comment,"status":self.status}),
+			headers=None,
+			verify=self.events.root.verify
+		)

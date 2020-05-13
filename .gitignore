@@ -120,3 +120,4 @@ dmypy.json
 .idea/*
 
 internal_tests.py
+html/

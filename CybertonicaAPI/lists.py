@@ -1,38 +1,44 @@
 import json
 
 class List:
-	'''
-	List class
+	"""List class.
 
-	:param url: base url (see ../client.py)
-	:type url: str
-	:param do: function 'r', that sends requests (see ../client.py)
-	:type do: function
-	'''
+	Attributes:
+		root: Object of Client class.
+	"""
 	def __init__(self, root):
 		self.root = root
 		self.items = Item(root)
 
 	def get_all(self):
-		'''
-		Get all Policies
+		"""Get all lists.
 
-		Method: GET
-		Endpoint: /api/v1/lists
-		'''
+		Method:
+			GET
+		Endpoint:
+			/api/v1/lists
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		url = f'{self.root.url}/api/v1/lists'
 		return self.root.r('GET',url,body=None,headers=None,verify=self.root.verify)
 
 	def get_by_id(self, id):
-		'''
-		Get list by ID
-
-		Method: GET
-		Endpoint: /api/v1/lists/{id}
-
-		:param id: list id
-		:type id: str
-		'''
+		"""Get list from system by ID.
+		
+		Args:
+			id: List ID.
+		Method:
+			GET
+		Endpoint:
+			/api/v1/lists/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(id, str), 'The ID must be a string'
 		assert id , 'The ID must not be an empty string'
 		
@@ -40,15 +46,25 @@ class List:
 		return self.root.r('GET',url,body=None,headers=None,verify=self.root.verify)
 
 	def create(self, data):
-		'''
-		Create list by data
+		"""Create list in the system by data.
+		
+		Args:
+			data: Dictionary of user data.
 
-		Method: POST
-		Endpoint: /api/v1/lists
+				{
+					'name': "name",
+					'kind': "WHITE"
+				}
 
-		:param data: new list data
-		:type data: dict
-		'''
+		Method:
+			POST
+		Endpoint:
+			/api/v1/lists
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(data, dict), 'The data type must be a dictionary'
 		assert data, 'List data must not be an empty dictionary'
 
@@ -57,17 +73,29 @@ class List:
 		return self.root.r('POST',url,data,headers=None,verify=self.root.verify)
 
 	def update(self, id, data):
-		'''
-		Update list by ID
+		"""Update list in the system by data.
+		
+		Args:
+			data: Dictionary of user data.
 
-		Method: PUT
-		Endpoint:  /api/v1/lists/{id}
+				{
+					'createdAt': '<time>',
+					'createdBy': "test",
+					'id': '<id>',
+					'name': "test",
+					'kind': "WHITE",
+					'size': 0
+	    		}
 
-		:param id: list id
-		:type id: str
-		:param data: new list data
-		:type data: dict
-		'''
+		Method:
+			PUT
+		Endpoint:
+			/api/v1/lists/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(id, str), 'The ID must be a string'
 		assert id , 'The ID must not be an empty string'
 		assert isinstance(data, dict), 'The data type must be a dictionary'
@@ -78,15 +106,19 @@ class List:
 		return self.root.r('PUT',url,data,headers=None,verify=self.root.verify)
 
 	def delete(self, id):
-		'''
-		Remove list by ID
-
-		Method: DELETE
-		Endpoint: /api/v1/lists/{id}
-
-		:param id: list id
-		:type id: str
-		'''
+		"""Delete list from the system by ID.
+		
+		Args:
+			id: List ID.
+		Method:
+			DELETE
+		Endpoint:
+			/api/v1/lists/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(id, str), 'The ID must be a string'
 		assert id , 'The ID must not be an empty string'
 
@@ -138,15 +170,17 @@ class Item:
 		self.root = root
 
 	def get_all(self, list_id):
-		'''
-		Get all items by list
+		"""Get all items from list.
 
-		Method: GET
-		Endpoint: /api/v1/items/{id}
-
-		:param lid: list id
-		:type lid: str
-		'''
+		Method:
+			GET
+		Endpoint:
+			/api/v1/items/{list_id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(list_id, str), 'List ID must be a string'
 		assert list_id , 'List ID must not be an empty string'
 
@@ -154,17 +188,20 @@ class Item:
 		return self.root.r('GET',url,body=None,headers=None,verify=self.root.verify)
 
 	def get_by_id(self, list_id, id):
-		'''
-		Get item by ID from list
-
-		Method: GET
-		Endpoint: /api/v1/items/{list_id}/item/{id}
-
-		:param lid: list id
-		:type lid: str
-		:param id: item id
-		:type id: str
-		'''
+		"""Get item from list by ID.
+		
+		Args:
+			list_id: List ID.
+			id: Item ID.
+		Method:
+			GET
+		Endpoint:
+			/api/v1/items/{list_id}/item/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(list_id, str), 'List ID must be a string'
 		assert list_id , 'List ID must not be an empty string'
 		assert isinstance(id, str), 'The ID must be a string'
@@ -192,15 +229,29 @@ class Item:
 		
 
 	def create(self, list_id, data):
-		'''
-		Create item by data
+		"""Create list in the system by data.
+		
+		Args:
+			list_id: The ID of the list to which the item will belong to.
+			data: Dictionary of user data.
 
-		Method: POST
-		Endpoint: /api/v1/items
+				{
+					"listId": <list_id>,
+					"value":"test",
+					"comment":"test",
+					"expireAt":1234567890,
+					"status":"test"
+				}
 
-		:param data: new item data
-		:type data: dict
-		'''
+		Method:
+			POST
+		Endpoint:
+			/api/v1/items/{list_id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(list_id, str), "List ID type must be a string"
 		assert list_id, "List ID must not be an empty string"
 		assert isinstance(data, dict), "The data type must be a dictionary"
@@ -212,17 +263,35 @@ class Item:
 		
 
 	def update(self, list_id, id, data):
-		'''
-		Update item by id
+		"""Update item in the list by ID.
+		
+		Args:
+			list_id: The ID of the list to which the item will belong to.
+			id: Item ID
+			data: Dictionary of user data.
 
-		Method: PUT
-		Endpoint: /api/v1/items/{id}
+				{
+					'comment': 'test',
+					'createdAt': 1234567890,
+					'createdBy': 'test',
+					'expireAt': 1234567890,
+					'expired': True,
+					'id': '<id>',
+					'listId': '<list_id>',
+					'status': 'test',
+					'updatedBy': 'test',
+					'value': 'test'
+				}
 
-		:param id: item id
-		:type id: str
-		:param data: new item data
-		:type data: str
-		'''
+		Method:
+			PUT
+		Endpoint:
+			/api/v1/items/{list_id}/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(list_id, str), "List ID must be a string"
 		assert list_id, "List ID must not be an empty string"
 
@@ -237,15 +306,20 @@ class Item:
 		return self.root.r('PUT',url,data,headers=None,verify=self.root.verify)
 
 	def delete(self,list_id, id):
-		'''
-		Remove item by id
-
-		Method: DELETE
-		Endpoint: /api/v1/items/{id}
-
-		:param id: item id
-		:type id: str
-		'''
+		"""Delete item from the list by ID.
+		
+		Args:
+			list_id: The ID of the list to which the item will belong to.
+			id: Item ID.
+		Method:
+			DELETE
+		Endpoint:
+			/api/v1/items/{list_id}/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(list_id, str), "List ID must be a string"
 		assert list_id, "List ID must not be an empty string"
 		assert isinstance(id, str), "The ID must be a string"

@@ -14,22 +14,12 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class Client:
-	'''
-	Facade class. Contains all methods from /src classes
+	"""Main Facade class. Contains all methods.
 
-	:param scheme: request's scheme (http/https)
-	:type scheme: str
-	:param host: host (test.cybertonica.com)
-	:type host: str
-	:param team: user team (test,dev)
-	:type team: str
-	:param key: apiUserKey (see Settings tab)
-	:type key: str
-	:param login: user login
-	:type login: str
-	:param password: user password
-	:type password: str
-	'''
+	Attributes:
+		**settings: Set of settings for the class.It must contains a
+			required parameters: url, team, api_key.
+	"""
 
 	def __init__(self, **settings):
 		assert 'url' in settings, 'url is required parameter'
@@ -62,20 +52,29 @@ class Client:
 		}
 
 	def r(self, method, url=None, body=None, headers=None, files=None, verify=True):
-		'''
-		Main function for the sending requests
-
-		:param method: request's method (GET,POST,PUT, etc)
-		:type methpd: str
-		:param url: URL (<scheme>://<host>/<endpoint>..)
-		:type url: str
-		:param body: request's data (result after json.dumps())
-		:type body: str
-		:return: status code and JSON(if there is it else json=None)
-		:rtype: couple
-		'''
-		assert method, 'method is required parameter'
+		"""Main function for the sending requests.
 		
+		Args:
+			method: request's method.
+			url: target URL.
+			body: request's data after applying json.dumps().
+			headers: request's headers. if the header is None
+				then standard headers are created:
+
+				{
+					'content-type': 'application/json;charset=utf-8',
+					'apiUserId': <user_team>,
+					'apiSignature': <signature>,
+					'Connection':  'keep-alive',
+					'Authorization': 'Bearer <user_token>'
+				}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
+		assert method, 'method is required parameter'
+
 		if not headers:
 			headers = self.__create_headers()
 
@@ -88,6 +87,7 @@ class Client:
 
 		json = r.json() if 'json' in r.headers['Content-Type'] else None
 		return (r.status_code, json)
+
 
 if __name__ == "__main__":
 	pass

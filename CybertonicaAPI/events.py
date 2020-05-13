@@ -1,14 +1,11 @@
 import json
 
 class Event:
-	'''
-	Event class
+	"""Event class.
 
-	:param url: base url (see ../client.py)
-	:type url: str
-	:param do: function 'r', that sends requests (see ../client.py)
-	:type do: function
-	'''
+	Attributes:
+		root: Object of Client class.
+	"""
 	def __init__(self, root):
 		self.root = root
 
@@ -23,12 +20,19 @@ class Event:
 	#     return self.root.r('GET', url, body=None, headers=None,verify=self.root.verify)
 
 	def get_by_id(self,id):
-		'''
-		Get event by id
-
-		Method: GET
-		Endpoint: /api/v1/events/{id}
-		'''
+		"""Get event from system by ID.
+		
+		Args:
+			id: Event ID.
+		Method:
+			GET
+		Endpoint:
+			/api/v1/events/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(id, str), "The ID must be a string"
 		assert id, "The ID must not be an empty string"
 
@@ -36,14 +40,25 @@ class Event:
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
 	def get_by_queue(self,queue_name,start=0,limit=100):
-		'''
-		Get events by queue name, default values:
-			start is 0
-			limit is 100
+		"""Get events from system by queue.
 
-		Method: GET
-		Endpoint: /api/v1.1/events/queue/{queue_name}
-		'''
+		Endpoint has a simple pagination analog.
+			The start variable is shifted to the required offset.
+			The limit value is a constant in the range from 0 to 1000.
+		
+		Args:
+			queue_name: Queue name in the system.
+			start: Offset value. Default value is 0.
+			limit: Maximum sample size from the system.
+		Method:
+			GET
+		Endpoint:
+			/api/v1.1/events/queue/{queue_name}?start={start}&limit={limit}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(queue_name, str), "Queue name must be a string"
 		assert queue_name, "Queue name must not be an empty string"
 		
@@ -68,12 +83,22 @@ class Event:
 	#     return self.root.r('POST',url,data,headers=None, verify=self.root.verify)
 
 	def bulk_review(self, ids, comment, status):
-		'''
-		Set opStatus
-
-		Method: PUT
-		Endpoint: /api/v1.2/opStatus/review
-		'''
+		"""Setting an operation status to the events.
+		
+		Args:
+			ids: List of event IDs
+			comment: A string that contains comments for the operation
+			status: Status to be assigned to events. The status can only
+				be Ok, Challenge, Fraud.
+		Method:
+			PUT
+		Endpoint:
+			/api/v1.2/opStatus/review
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(ids, list), "ID list must be a list of string"
 		assert ids, "ID List must not be an empty list"
 
@@ -82,7 +107,7 @@ class Event:
 
 		assert status in ['Ok', 'Challenge', 'Fraud'], "Status value must be either 'Ok', 'Challenge' or 'Fraud'"
 
-		url = f'{self.root.url}/api/v1.2/opStatus/review' #??? #TODO
+		url = f'{self.root.url}/api/v1.2/opStatus/review'
 		data = json.dumps({
 			"ids":ids,
 			"comment": comment,
@@ -91,4 +116,20 @@ class Event:
 		return self.root.r('PUT',url,data,headers=None, verify=self.root.verify)
 
 	def review(self, id, comment, status):
+		"""Setting an operation status to the single event.
+		
+		Args:
+			id: Event ID
+			comment: A string that contains comments for the operation
+			status: Status to be assigned to events. The status can only
+				be Ok, Challenge, Fraud.
+		Method:
+			PUT
+		Endpoint:
+			/api/v1.2/opStatus/review
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		return self.bulk_review([id],comment,status)

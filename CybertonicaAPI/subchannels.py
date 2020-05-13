@@ -9,25 +9,34 @@ class Subchannel:
 		self.root = root
 
 	def get_all(self):
-		'''
-		Get all available sub-channels
+		"""Get all subchannels.
 
-		Method: GET
-		Endpoint: /api/v1/subChannels
-		'''
+		Method:
+			GET
+		Endpoint:
+			/api/v1/subChannels
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		url = f'{self.root.url}/api/v1/subChannels'
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
 	def get_by_id(self,id):
-		'''
-		Get sub-channel by ID
-
-		Method: GET
-		Endpoint: /api/v1/subChannels/{id}
-
-		:param id: sub-channel's ID
-		:type id: str
-		'''
+		"""Get subchannel from system by ID.
+		
+		Args:
+			id: Subchannel ID.
+		Method:
+			GET
+		Endpoint:
+			/api/v1/subChannels/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(id, str), 'The ID must be a string'
 		assert id, 'The ID must not be an empty string'
 
@@ -35,14 +44,17 @@ class Subchannel:
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 	
 	def search_by(self, key, value):
-		'''
-		Search sub-channel by key with value
-
-		:param key: 
-		:type key: str
-		:param value: 
-		:type value: str or int
-		'''
+		"""Search subchannel in the system by key:value.
+		
+		Args:
+			key: The key that will be used for searching.
+			value: The value that will be used for searching.
+			
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		status_code, subchannels = self.get_all()
 		if status_code >= 400:
 			return (status_code, subchannels)
@@ -54,15 +66,32 @@ class Subchannel:
 		return (False, None)
 	
 	def create(self,data):
-		'''
-		Creating sub-channel by data
+		"""Create subchannel in the system by data.
+		
+		Args:
+			data: Dictionary of user data.
 
-		Method: GET
-		Endpoint: /api/v1/subChannels
+				{
+					"aggregations": "test",
+					"channel": "test",
+					"comment": "test",
+					"const": {},
+					"name": "test",
+					"parent": "test",
+					"rules": "test",
+					"services": [],
+					"version": 1
+	    		}
 
-		:param data: data of new sub-channel
-		:type data: dict
-		'''
+		Method:
+			POST
+		Endpoint:
+			/api/v1/subChannels
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(data, dict), 'The data type must be a dictionary'
 		assert data, 'Subchannel data must not be an empty dictionary'
 
@@ -71,17 +100,34 @@ class Subchannel:
 		return self.root.r('POST', url, data, headers=None, verify=self.root.verify)
 
 	def update(self,id,data):
-		'''
-		Updating sub-channel by ID
+		"""Update subchannel in the system by data.
+		
+		Args:
+			id: Subchannel ID.
+			data: Dictionary of user data.
 
-		Method: PUT
-		Endpoint: /api/v1/subChannels/{id}
+				{
+					"channel":"test",
+					"comment":"test",
+					"createdAt":1234567890,
+					"createdBy":"test",
+					"id":"test",
+					"name":"test",
+					"policy":"test",
+					"updatedAt":1234567890,
+					"updatedBy":"test",
+					"version":1
+            	}
 
-		:param id: sub-channel's ID
-		:type id: str
-		:param data: new data for the sub-channel
-		:type data: dict
-		'''
+		Method:
+			PUT
+		Endpoint:
+			/api/v1/subChannels/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(id, str), 'The ID must be a string'
 		assert id , 'The ID must not be an empty string'
 		assert isinstance(data, dict), 'The data type must be a dictionary'
@@ -92,15 +138,19 @@ class Subchannel:
 		return self.root.r('PUT', url, data, headers=None, verify=self.root.verify)
 
 	def delete(self,id):
-		'''
-		Removing sub-channel by ID
-
-		Method: DELETE
-		Endpoint: /api/v1/subChannels/{id}
-
-		:param id: sub-channel's ID
-		:type id: str
-		'''
+		"""Remove subchannel from the system by ID.
+		
+		Args:
+			id: Subchannel ID.
+		Method:
+			DELETE
+		Endpoint:
+			/api/v1/subChannels/{str(id)}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(id, str), 'The ID must be a string'
 		assert id , 'The ID must not be an empty string'
 		

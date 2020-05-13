@@ -9,25 +9,34 @@ class User:
 		self.root = root
 
 	def get_all(self):
-		'''
-		Get all available users
+		"""Get all users.
 
-		Method: GET
-		Endpoint: /api/v1/users
-		'''
+		Method:
+			GET
+		Endpoint:
+			/api/v1/users
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		url = f'{self.root.url}/api/v1/users'
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
 	def get_by_id(self,id):
-		'''
-		Get user by ID
-
-		Method: GET
-		Endpoint: /api/v1/users/{id}
-
-		:param id: user's ID
-		:type id: str
-		'''
+		"""Get user from system by ID.
+		
+		Args:
+			id: User ID.
+		Method:
+			GET
+		Endpoint:
+			/api/v1/users/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(id, str), 'The ID must be a string'
 		assert id , 'The ID must not be an empty string'
 
@@ -35,15 +44,34 @@ class User:
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 	
 	def create(self,data):
-		'''
-		Creating user by data
+		"""Create user in the system by data.
+		
+		Args:
+			data: Dictionary of user data. If the dictionary
+					does not contain fields A and B, then they are
+					automatically added with the values 0.
 
-		Method: POST
-		Endpoint: /api/v1/users
+				{
+					"login":"s",
+					"firstName":"s",
+					"lastName":"s",
+					"email":"prettyandsimple@example.com",
+					"roles":[],
+					"active":True,
+					"password":"ApogeeSystemPassword12345",
+					"updatedAt":0,
+					"invitedAt":0
+				}
 
-		:param data: data of new user
-		:type data: dict
-		'''
+		Method:
+			POST
+		Endpoint:
+			/api/v1/subChannels
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(data, dict), 'The data type must be a dictionary'
 		assert data, 'User data must not be an empty dictionary'
 
@@ -52,17 +80,35 @@ class User:
 		return self.root.r('POST', url, data, headers=None, verify=self.root.verify)
 
 	def update(self,id,data):
-		'''
-		Updating user by ID
+		"""Update user in the system by data.
+		
+		Args:
+			id: User ID.
+			data: Dictionary of user data.
 
-		Method: PUT
-		Endpoint: /api/v1/users/{id}
+				{
+					"login":"test",
+					"firstName":"test",
+					"lastName":"test",
+					"email":"test",
+					"roles":[],
+					"active":True,
+					"updatedAt":1234567890,
+					"invitedAt":1234567890,
+					"id": "test",
+					"experimental":None,
+					"loginAt": 1234567890
+				}
 
-		:param id: user's ID
-		:type id: str
-		:param data: new data for the user
-		:type data: dict
-		'''
+		Method:
+			PUT
+		Endpoint:
+			/api/v1/users/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(id, str), 'The ID must be a string'
 		assert id , 'The ID must not be an empty string'
 		assert isinstance(data, dict), 'The data type must be a dictionary'
@@ -73,15 +119,19 @@ class User:
 		return self.root.r('PUT', url, data, headers=None, verify=self.root.verify)
 
 	def delete(self,id):
-		'''
-		Removing user by ID
-
-		Method: DELETE
-		Endpoint: /api/v1/users/{id}
-
-		:param id: user's ID
-		:type id: str
-		'''
+		"""Remove user from the system by ID.
+		
+		Args:
+			id: User ID.
+		Method:
+			DELETE
+		Endpoint:
+			/api/v1/users/{id}
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(id, str), 'The ID must be a string'
 		assert id , 'The ID must not be an empty string'
 		
@@ -89,14 +139,16 @@ class User:
 		return self.root.r('DELETE', url, body=None, headers=None, verify=self.root.verify)
 	
 	def add_role(self,id,role):
-		'''
-		Add role to the user
-
-		:param id: user's ID
-		:type id: str
-		:param role: target role (exist in the system), e.g. 'Fraud Support'
-		:type role: str
-		'''
+		"""Add role to the user by ID.
+		
+		Args:
+			id: User ID.
+			role: Role name
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(role, str), 'Role name must be a string'
 		assert isinstance(id, str), 'The ID must be a string'
 		assert role, 'Role name must not be an empty string'
@@ -113,14 +165,16 @@ class User:
 		return self.update(id, user)
 	
 	def remove_role(self,id,role):
-		'''
-		Remove role from the user
-
-		:param id: user's ID
-		:type id: str
-		:param role: target role (exist in the system), e.g. 'Fraud Support'
-		:type role: str
-		'''
+		"""Removed role from the user by ID.
+		
+		Args:
+			id: User ID.
+			role: Role name
+		Returns:
+			A tuple that contains status code and response's JSON.
+				If headers does not contain 'json' in the Content-Type,
+				then data is None.
+		"""
 		assert isinstance(role, str), 'Role name must be a string'
 		assert isinstance(id, str), 'The ID must be a string'
 		assert role, 'Role name must not be an empty string'

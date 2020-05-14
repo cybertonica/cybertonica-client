@@ -7,29 +7,29 @@ class Auth:
 	"""Auth class.
 
 	Attributes:
-		root: Object of Client class.
+			root: Object of `CybertonicaAPI.Client`
 	"""
+
 	def __init__(self, root):
 		self.root = root
 
 	def login(self, api_user, api_user_key_hash):
-		"""Create web session as api_user.
+		"""Create web session.
 
 		Args:
-			api_user: User login.
-			api_user_key_hash: User password.
+				api_user: User login.
+				api_user_key_hash: User password.
 		Method:
-			POST
+				`POST`
 		Endpoint:
-			/api/v1/login
+				`/api/v1/login`
 		Returns:
-			A tuple that contains status code and response's JSON.
-				If headers does not contain 'json' in the Content-Type,
-				then data is None.
+				See CybertonicaAPI.Client.r
 		"""
 		assert isinstance(api_user, str), 'The api user must be a string'
 		assert api_user, 'The api user must not be an empty string'
-		assert isinstance(api_user_key_hash, str), 'The api user key hash must be a string'
+		assert isinstance(api_user_key_hash,
+						  str), 'The api user key hash must be a string'
 		assert api_user_key_hash, 'The api user key hash must not be an empty string'
 
 		url = f'{self.root.url}/api/v1/login'
@@ -47,40 +47,36 @@ class Auth:
 
 	def logout(self):
 		"""Drop web session.
-		
+
 		Method:
-			POST
+				`POST`
 		Endpoint:
-			/api/v1/logout
+				`/api/v1/logout`
 		Returns:
-			A tuple that contains status code and response's JSON.
-				If headers does not contain 'json' in the Content-Type,
-				then data is None.
+				See CybertonicaAPI.Client.r
 		"""
 		url = f'{self.root.url}/api/v1/logout'
 		headers = {
 			"content-type": "application/json",
 			"Authorization": f"Bearer {self.root.token}"}
 		status_code, data = self.root.r(
-			'POST', url, headers,body=None, verify=self.root.verify)
+			'POST', url, headers, body=None, verify=self.root.verify)
 		if status_code < 400:
 			self.root.token = ''
 		return (status_code, data)
 
 	def recovery_password(self, team, email):
 		"""Recovery password.
-		
+
 		Args:
-			team: user team.
-			email: user email.
+				team: user team.
+				email: user email.
 		Method:
-			GET
+				`GET`
 		Endpoint:
-			/api/v1/recovery/request?team={team}&email={email}
+				`/api/v1/recovery/request?team={team}&email={email}`
 		Returns:
-			A tuple that contains status code and response's JSON.
-				If headers does not contain 'json' in the Content-Type,
-				then data is None.
+				See CybertonicaAPI.Client.r
 		"""
 		assert isinstance(team, str), 'Team must be a string'
 		assert team, 'Team must not be an empty string'
@@ -90,38 +86,36 @@ class Auth:
 
 		url = f'{self.root.url}/api/v1/recovery/request?team={team}&email={email}'
 		headers = {"content-type": "application/json"}
-		return self.root.r('GET', url, headers,body=None, verify=self.root.verify)
+		return self.root.r('GET', url, headers, body=None, verify=self.root.verify)
 
 	def register(self, data):
 		"""Create a new user in the system.
-		
-		Args:
-			data: Dictionary of user data. If the dictionary
-					does not contain fields A and B, then they are
-					automatically added with the values 0.
 
-				{
-					"email":"example@test.com",
-					"password":"Password12345",
-					"team":"test",
-					"firstName":"Test",
-					"lastName":"Test",
-					"login":"test",
-					"inivitedAt":0,
-					"updatedAt":0
-				}
+		Args:
+				data: Dictionary of user data. If the dictionary
+								does not contain fields `invitedAt` or `updatedAt`,
+								then they are automatically added with the values `0`.
+
+						{
+							"email":"example@test.com",
+							"password":"Password12345",
+							"team":"test",
+							"firstName":"Test",
+							"lastName":"Test",
+							"login":"test",
+							"invitedAt":0,
+							"updatedAt":0
+						}
 		Method:
-			POST
+				`POST`
 		Endpoint:
-			/api/v1/registration
+				`/api/v1/registration`
 		Returns:
-			A tuple that contains status code and response's JSON.
-				If headers does not contain 'json' in the Content-Type,
-				then data is None.
+				See CybertonicaAPI.Client.r
 		"""
 		assert isinstance(data, dict), 'The data type must be a dictionary'
 		assert data, 'User data must not be an empty dictionary'
-		
+
 		url = f'{self.root.url}/api/v1/registration'
 		headers = {"content-type": "application/json"}
 		if "invitedAt" not in data:

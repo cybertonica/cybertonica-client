@@ -1,11 +1,13 @@
 import json
 
+
 class Channel:
 	"""Channel class.
 
 	Attributes:
-		root: Object of Client class.
+			root: Object of `CybertonicaAPI.Client`
 	"""
+
 	def __init__(self, root):
 		self.root = root
 
@@ -13,13 +15,11 @@ class Channel:
 		"""Get all available channels.
 
 		Method:
-			GET
+				`GET`
 		Endpoint:
-			/api/v1/subChannels/channels
+				`/api/v1/subChannels/channels`
 		Returns:
-			A tuple that contains status code and response's JSON.
-				If headers does not contain 'json' in the Content-Type,
-				then data is None.
+				See CybertonicaAPI.Client.r
 		"""
-		url =  f'{self.root.url}/api/v1/subChannels/channels'
+		url = f'{self.root.url}/api/v1/subChannels/channels'
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)

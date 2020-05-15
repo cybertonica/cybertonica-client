@@ -58,6 +58,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertEqual(self.client.token, '')
 		self.assertEqual(self.client.team, 'test')
 		self.assertEqual(self.client.signature, 'test')
+		self.assertFalse(self.client.dev_mode)
 
 
 class TestBadInitClient(unittest.TestCase):

@@ -6,6 +6,8 @@ from CybertonicaAPI.channels import Channel
 from CybertonicaAPI.events import Event
 from CybertonicaAPI.auth import Auth
 from CybertonicaAPI.roles import Role
+from CybertonicaAPI.abtests import ABTest
+
 import json
 
 import requests
@@ -46,6 +48,7 @@ class Client:
 		self.policies = Policy(self)
 		self.events = Event(self)
 		self.roles = Role(self)
+		self.abtests = ABTest(self)
 
 	def __create_headers(self):
 		return {

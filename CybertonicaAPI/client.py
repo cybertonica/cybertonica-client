@@ -5,6 +5,11 @@ from CybertonicaAPI.subchannels import Subchannel
 from CybertonicaAPI.channels import Channel
 from CybertonicaAPI.events import Event
 from CybertonicaAPI.auth import Auth
+<<<<<<< Updated upstream
+=======
+from CybertonicaAPI.roles import Role
+from CybertonicaAPI.abtests import ABTest
+>>>>>>> Stashed changes
 import json
 
 import requests
@@ -41,6 +46,11 @@ class Client:
 		self.channels = Channel(self)
 		self.policies = Policy(self)
 		self.events = Event(self)
+<<<<<<< Updated upstream
+=======
+		self.roles = Role(self)
+		self.abtests = ABTest(self)
+>>>>>>> Stashed changes
 
 	def __create_headers(self):
 		return {

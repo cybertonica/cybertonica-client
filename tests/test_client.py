@@ -33,6 +33,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'users'))
 		self.assertTrue(hasattr(self.client, 'channels'))
 		self.assertTrue(hasattr(self.client, 'policies'))
+		self.assertTrue(hasattr(self.client, 'roles'))
 
 	def test_types_of_fields_inside_client_object(self):
 		self.assertIsInstance(self.client.url, str)
@@ -44,6 +45,10 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client.subchannels, object)
 		self.assertIsInstance(self.client.lists, object)
 		self.assertIsInstance(self.client.users, object)
+		self.assertIsInstance(self.client.policies, object)
+		self.assertIsInstance(self.client.roles, object)
+		self.assertIsInstance(self.client.channels, object)
+
 
 	def test_values_of_fields_inside_client_object(self):
 		self.assertEqual(self.client.url, 'https://test.com')
@@ -51,6 +56,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertEqual(self.client.token, '')
 		self.assertEqual(self.client.team, 'test')
 		self.assertEqual(self.client.signature, 'test')
+		self.assertFalse(self.client.dev_mode)
 
 
 class TestBadInitClient(unittest.TestCase):

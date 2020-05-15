@@ -34,11 +34,8 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'users'))
 		self.assertTrue(hasattr(self.client, 'channels'))
 		self.assertTrue(hasattr(self.client, 'policies'))
-<<<<<<< Updated upstream
-=======
 		self.assertTrue(hasattr(self.client, 'roles'))
 		self.assertTrue(hasattr(self.client, 'abtests'))
->>>>>>> Stashed changes
 
 	def test_types_of_fields_inside_client_object(self):
 		self.assertIsInstance(self.client.url, str)
@@ -50,14 +47,10 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client.subchannels, object)
 		self.assertIsInstance(self.client.lists, object)
 		self.assertIsInstance(self.client.users, object)
-<<<<<<< Updated upstream
-=======
 		self.assertIsInstance(self.client.policies, object)
 		self.assertIsInstance(self.client.roles, object)
 		self.assertIsInstance(self.client.channels, object)
 		self.assertIsInstance(self.client.abtests, object)
-
->>>>>>> Stashed changes
 
 	def test_values_of_fields_inside_client_object(self):
 		self.assertEqual(self.client.url, 'https://test.com')

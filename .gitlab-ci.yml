@@ -1,0 +1,4 @@
+include:
+  - project: 'DevOps/deploy'
+    ref: master
+    file: '/ci-templates/af/vega-ci.yaml'

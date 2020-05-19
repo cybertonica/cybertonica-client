@@ -13,8 +13,8 @@ class TestInitClient(unittest.TestCase):
 	def setUpClass(cls):
 		cls.client = client.Client(
 			url='https://test.com',
-			team='test',
-			api_key='test')
+			team='test'
+			)
 
 	def test_client_object_creation(self):
 		self.assertIsInstance(self.client, client.Client)
@@ -26,7 +26,6 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'verify'))
 		self.assertTrue(hasattr(self.client, 'token'))
 		self.assertTrue(hasattr(self.client, 'team'))
-		self.assertTrue(hasattr(self.client, 'signature'))
 		self.assertTrue(hasattr(self.client, 'dev_mode'))
 		self.assertTrue(hasattr(self.client, 'auth'))
 		self.assertTrue(hasattr(self.client, 'subchannels'))
@@ -36,13 +35,13 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'policies'))
 		self.assertTrue(hasattr(self.client, 'roles'))
 		self.assertTrue(hasattr(self.client, 'abtests'))
+		self.assertTrue(hasattr(self.client, 'af'))
 
 	def test_types_of_fields_inside_client_object(self):
 		self.assertIsInstance(self.client.url, str)
 		self.assertIsInstance(self.client.verify, bool)
 		self.assertIsInstance(self.client.token, str)
 		self.assertIsInstance(self.client.team, str)
-		self.assertIsInstance(self.client.signature, str)
 		self.assertIsInstance(self.client.auth, object)
 		self.assertIsInstance(self.client.subchannels, object)
 		self.assertIsInstance(self.client.lists, object)
@@ -51,13 +50,15 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client.roles, object)
 		self.assertIsInstance(self.client.channels, object)
 		self.assertIsInstance(self.client.abtests, object)
+		self.assertIsInstance(self.client.af, object)
 
 	def test_values_of_fields_inside_client_object(self):
 		self.assertEqual(self.client.url, 'https://test.com')
-		self.assertEqual(self.client.verify, False)
+		self.assertEqual(self.client.verify, True)
 		self.assertEqual(self.client.token, '')
 		self.assertEqual(self.client.team, 'test')
-		self.assertEqual(self.client.signature, 'test')
+		self.assertEqual(self.client.api_user_id, '')
+		self.assertEqual(self.client.api_signature, '')
 		self.assertFalse(self.client.dev_mode)
 
 
@@ -70,9 +71,6 @@ class TestBadInitClient(unittest.TestCase):
 		with self.assertRaisesRegex(AssertionError, 'team is required parameter'):
 			client.Client(url='')
 
-		with self.assertRaisesRegex(AssertionError, 'api_key is required parameter'):
-			client.Client(url='', team='')
-
 	def test_init_client_with_incorrect_params(self):
 		t = client.Client(url=True, team={}, api_key=list)
 
@@ -82,9 +80,6 @@ class TestBadInitClient(unittest.TestCase):
 		self.assertIsInstance(t.team, str)
 		self.assertEqual(t.team, '{}')
 
-		self.assertIsInstance(t.signature, str)
-		self.assertEqual(t.signature, "<class 'list'>")
-
 
 class TestClientRequestWithToMock(unittest.TestCase):
 
@@ -93,7 +88,7 @@ class TestClientRequestWithToMock(unittest.TestCase):
 		cls.client = client.Client(
 			url='test',
 			team='test',
-			api_key='test')
+		)
 
 	@patch('requests.request', return_value=PropertyMock())
 	def test_client_must_use_default_url(self, mock):
@@ -120,8 +115,6 @@ class TestClientRequestWithToMock(unittest.TestCase):
 
 		expected_headers = {
 			'content-type': 'application/json;charset=utf-8',
-			'apiUserId': 'test',
-			'apiSignature': 'test',
 			'Connection': 'keep-alive',
 			'Authorization': 'Bearer '
 		}
@@ -131,7 +124,7 @@ class TestClientRequestWithToMock(unittest.TestCase):
 
 	@patch('requests.request', return_value=PropertyMock(
 		status_code=200,
-		headers={'Content-Type': 'application/json'},
+		headers={'Content-Type':'application/json'},
 		json=lambda: {"data1": 1, "data2": 2}
 	))
 	def test_response_processing_from_server_if_json_exist(self, mock):
@@ -141,8 +134,7 @@ class TestClientRequestWithToMock(unittest.TestCase):
 		self.assertIsInstance(status, int)
 		self.assertEqual(status, 200)
 
-		self.assertIsInstance(json, dict)
-		self.assertEqual(json, {"data1": 1, "data2": 2})
+		self.assertIsInstance(json, type(None))
 
 	@patch('requests.request', return_value=PropertyMock(
 		status_code=200,

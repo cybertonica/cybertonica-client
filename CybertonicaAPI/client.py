@@ -10,7 +10,7 @@ from CybertonicaAPI.abtests import ABTest
 from CybertonicaAPI.afclient import AFClient
 from CybertonicaAPI.cases import Case
 from CybertonicaAPI.settings import Settings
-
+from CybertonicaAPI.queues import Queue
 import json
 
 import requests
@@ -60,6 +60,7 @@ class Client:
 		self.af = AFClient(self)
 		self.cases = Case(self)
 		self.settings = Settings(self)
+		self.queues = Queue(self)
 
 	def __create_headers(self):
 		return {

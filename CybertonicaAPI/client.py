@@ -7,11 +7,13 @@ from CybertonicaAPI.events import Event
 from CybertonicaAPI.auth import Auth
 from CybertonicaAPI.roles import Role
 from CybertonicaAPI.abtests import ABTest
+from CybertonicaAPI.afclient import AFClient
 
 import json
 
 import requests
 import urllib3
+import logging
 # ignore SSL certificates
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -27,19 +29,16 @@ class Client:
 	def __init__(self, **settings):
 		assert 'url' in settings, 'url is required parameter'
 		assert 'team' in settings, 'team is required parameter'
-		assert 'api_key' in settings, 'api_key is required parameter'
-
+		
 		self.url = str(settings['url'])
 		self.team = str(settings['team'])
-		self.signature = str(settings['api_key'])
-
+		self.api_user_id = str(settings['api_user_id']) if 'api_user_id' in settings else ''
+		self.api_signature = str(settings['api_signature']) if 'api_signature' in settings else ''
 		self.verify = bool(settings['verify']
-						   ) if 'verify' in settings else False
+						   ) if 'verify' in settings else True
 		self.token = ''
-
 		self.dev_mode = bool(settings['dev_mode']
 						   ) if 'dev_mode' in settings else False
-
 		self.auth = Auth(self)
 		self.subchannels = Subchannel(self)
 		self.lists = List(self)
@@ -49,12 +48,11 @@ class Client:
 		self.events = Event(self)
 		self.roles = Role(self)
 		self.abtests = ABTest(self)
+		self.af = AFClient(self)
 
 	def __create_headers(self):
 		return {
 			'content-type': 'application/json;charset=utf-8',
-			'apiUserId': self.team,
-			'apiSignature': self.signature,
 			'Connection':  'keep-alive',
 			'Authorization': f'Bearer {self.token}'
 		}
@@ -71,14 +69,12 @@ class Client:
 
 						{
 							'content-type': 'application/json;charset=utf-8',
-							'apiUserId': <user_team>,
-							'apiSignature': <signature>,
 							'Connection':  'keep-alive',
 							'Authorization': 'Bearer <user_token>'
 						}
 		Returns:
 				A tuple that contains status code and response's JSON.
-						If headers does not contain 'json' in the Content-Type,
+						If headers does not contain 'json' or 'text' in the Content-Type,
 						then data is None.
 		"""
 		assert method, 'method is required parameter'
@@ -93,9 +89,11 @@ class Client:
 		r = requests.request(method=str(method), url=str(url), data=str(
 			body), headers=headers, files=files, verify=verify)
 
-		json = r.json() if 'json' in r.headers['Content-Type'] else None
-		return (r.status_code, json)
-
+		data = None
+		if r.headers.get('content-type'):
+			data = r.json() if 'json' in r.headers.get('content-type') else r.text
+		
+		return (r.status_code, data)
 
 if __name__ == "__main__":
 	pass

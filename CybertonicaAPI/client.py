@@ -8,6 +8,7 @@ from CybertonicaAPI.auth import Auth
 from CybertonicaAPI.roles import Role
 from CybertonicaAPI.abtests import ABTest
 from CybertonicaAPI.afclient import AFClient
+from CybertonicaAPI.cases import Case
 
 import json
 
@@ -49,6 +50,7 @@ class Client:
 		self.roles = Role(self)
 		self.abtests = ABTest(self)
 		self.af = AFClient(self)
+		self.cases = Case(self)
 
 	def __create_headers(self):
 		return {

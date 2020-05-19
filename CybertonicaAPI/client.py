@@ -9,6 +9,7 @@ from CybertonicaAPI.roles import Role
 from CybertonicaAPI.abtests import ABTest
 from CybertonicaAPI.afclient import AFClient
 from CybertonicaAPI.cases import Case
+from CybertonicaAPI.settings import Settings
 
 import json
 
@@ -24,7 +25,14 @@ class Client:
 
 	Attributes:
 			**settings: Set of settings for the class.It must contains a
-					required parameters: `url`, `team`, `api_key`.
+					required parameters: `url`, `team`.
+				
+				url: target url of environment.
+				team: value of team.
+				api_user_id: user id for AF.
+				api_signature: value of signature for AF.
+				verify: True, if you need to ignore SSL certificates.
+				dev_mode: True, if you need enable hidden functions.
 	"""
 
 	def __init__(self, **settings):
@@ -51,6 +59,7 @@ class Client:
 		self.abtests = ABTest(self)
 		self.af = AFClient(self)
 		self.cases = Case(self)
+		self.settings = Settings(self)
 
 	def __create_headers(self):
 		return {

@@ -40,6 +40,7 @@ class Client:
 		assert 'team' in settings, 'team is required parameter'
 		
 		self.url = str(settings['url'])
+		self.af_url = str(settings['custom_af_url']) if 'custom_af_url' in settings else self.url
 		self.team = str(settings['team'])
 		self.api_user_id = str(settings['api_user_id']) if 'api_user_id' in settings else ''
 		self.api_signature = str(settings['api_signature']) if 'api_signature' in settings else ''

@@ -73,9 +73,9 @@ class AFClient:
 		:rtype: str
 		"""
 		if update_status:
-			return f"{self.root.url}:7499/api/v2.2/events/{channel}?subChannel={sub_channel}&status={update_status}"
+			return f"{self.root.af_url}/api/v2.2/events/{channel}?subChannel={sub_channel}&status={update_status}"
 		else:
-			return f"{self.root.url}:7499/api/v2.2/events/{channel}?subChannel={sub_channel}"
+			return f"{self.root.af_url}/api/v2.2/events/{channel}?subChannel={sub_channel}"
 
 
 	def __create_url_for_update(self, extid, channel, update_status):

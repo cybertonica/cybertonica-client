@@ -120,7 +120,7 @@ class TestClientRequestWithToMock(unittest.TestCase):
 					  headers=None, files='test_files', verify=True)
 
 		expected_headers = {
-			'content-type': 'application/json;charset=utf-8',
+			'Content-Type': 'application/json',
 			'Connection': 'keep-alive',
 			'Authorization': 'Bearer '
 		}
@@ -140,7 +140,7 @@ class TestClientRequestWithToMock(unittest.TestCase):
 		self.assertIsInstance(status, int)
 		self.assertEqual(status, 200)
 
-		self.assertIsInstance(json, type(None))
+		self.assertIsInstance(json, dict)
 
 	@patch('requests.request', return_value=PropertyMock(
 		status_code=200,
@@ -148,13 +148,12 @@ class TestClientRequestWithToMock(unittest.TestCase):
 		json=lambda: "test"
 	))
 	def test_response_processing_from_server_if_json_not_exist(self, mock):
-		status, json = self.client.r(method='test_method', url='test_url', body='test_body',
+		status, data = self.client.r(method='test_method', url='test_url', body='test_body',
 									 headers=None, files='test_files', verify=True)
 
-		self.assertIsInstance(status, int)
 		self.assertEqual(status, 200)
 
-		self.assertEqual(json, None)
+		self.assertIsInstance(data, unittest.mock.MagicMock)
 
 
 class TestClientIncorrectRequestToMock(unittest.TestCase):

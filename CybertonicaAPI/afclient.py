@@ -48,7 +48,7 @@ class AFClient:
 		:return: headers for post request
 		:rtype: dict
 		"""
-		post_headers = {'content-type': 'application/json',
+		post_headers = {'Content-Type': 'application/json',
 						'X-AF-Team': user_id,
 						'Connection': 'keep-alive',
 						'X-AF-Signature': self.__create_signature(key, raw)}
@@ -79,9 +79,9 @@ class AFClient:
 
 
 	def __create_url_for_update(self, extid, channel, update_status):
-		return f"{self.root.url}:7499/api/v2.2/events/{channel}/{extid}?status={update_status}"
+		return f"{self.root.af_url}/api/v2.2/events/{channel}/{extid}?status={update_status}"
 
-	def create(self, body,update_status=None,sess=None, timeout=1):
+	def create(self, body,channel=None, sub_channel=None, update_status=None,sess=None, timeout=1):
 		"""Doing a post request to createEvent.
 
 		Combining all the previous methods we are creating a request to AF.
@@ -95,12 +95,12 @@ class AFClient:
 		"""
 		string_body = json.dumps(body)
 		headers = self.__create_headers(self.root.api_user_id, self.root.api_signature, string_body)
-		url = self.__create_url(body['channel'],body['sub_channel'],update_status)
+		url = self.__create_url(body['channel'], body['sub_channel'], update_status)
 		if sess:
 			r = sess.post(url, headers=headers, data=string_body, timeout=timeout, verify=self.root.verify)
 		else:
 			return self.root.r(method='POST', url=url, headers=headers, body=string_body, verify=self.root.verify)
-		return r.status_code,r.text
+		return r.status_code, r.text
 
 	def update(self,channel,extid,status,body,sess=None,timeout=1):
 		"""Doing a post update with extid.

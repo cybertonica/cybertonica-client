@@ -73,7 +73,7 @@ class Client:
 
 	def __create_headers(self):
 		return {
-			'content-type': 'application/json;charset=utf-8',
+			'Content-Type': 'application/json',
 			'Connection':  'keep-alive',
 			'Authorization': f'Bearer {self.token}'
 		}
@@ -118,11 +118,8 @@ class Client:
 
 		r = requests.request(method=str(method), url=str(url), data=str(
 			body), headers=headers, files=files, verify=verify)
-
-		data = None
-		if r.headers.get('content-type'):
-			data = r.json() if 'json' in r.headers.get('content-type') else r.text
-		
+	
+		data = r.json() if 'json' in r.headers.get('Content-Type', '') else r.text
 		return (r.status_code, data)
 
 if __name__ == "__main__":

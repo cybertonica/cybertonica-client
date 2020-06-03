@@ -46,17 +46,12 @@ class Client:
 		self.url = str(settings['url'])
 		self.af_url = str(settings['custom_af_url']) if 'custom_af_url' in settings else self.url
 		self.team = str(settings['team'])
-		self.api_user_id = str(settings['api_user_id']
-		                       ) if 'api_user_id' in settings else ''
-		self.api_signature = str(
-		    settings['api_signature']) if 'api_signature' in settings else ''
-		self.verify = bool(settings['verify']
-						   ) if 'verify' in settings else True
+		self.api_user_id = str(settings['api_user_id']) if 'api_user_id' in settings else ''
+		self.api_signature = str(settings['api_signature']) if 'api_signature' in settings else ''
+		self.verify = bool(settings['verify']) if 'verify' in settings else True
 		self.token = ''
-		self.dev_mode = bool(settings['dev_mode']
-						   ) if 'dev_mode' in settings else False
+		self.dev_mode = bool(settings['dev_mode']) if 'dev_mode' in settings else False
 		
-	
 		self.auth = Auth(self)
 		self.subchannels = Subchannel(self)
 		self.lists = List(self)
@@ -99,18 +94,17 @@ class Client:
 						then data is None.
 		"""
 		self.log.debug(
-            "Trying %s request to %s with body=%s headers=%s files=%s verify=%s",
-            method,
+			"Trying %s request to %s with body=%s headers=%s files=%s verify=%s",
+			method,
 			url,
 			body,
 			headers,
 			files,
 			verify
-        )
+		)
 		assert method, 'method is required parameter'
 
-		if not headers:
-			headers = self.__create_headers()
+		headers = headers if headers else self.__create_headers()
 
 		assert isinstance(headers, dict), 'headers must be a dict'
 
@@ -118,8 +112,11 @@ class Client:
 
 		r = requests.request(method=str(method), url=str(url), data=str(
 			body), headers=headers, files=files, verify=verify)
-	
-		data = r.json() if 'json' in r.headers.get('Content-Type', '') else r.text
+
+		try:
+			data = r.json() if 'json' in r.headers.get('Content-Type', '') else r.text
+		except:
+			data = None
 		return (r.status_code, data)
 
 if __name__ == "__main__":

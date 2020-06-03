@@ -25,7 +25,6 @@ class TestInitABTestClass(unittest.TestCase):
 
 		self.assertTrue("get_all" in dir(self.abtests))
 		self.assertTrue("get_by_id" in dir(self.abtests))
-		# self.assertTrue("get_test_stats_by_id" in dir(self.abtests))
 		self.assertTrue("start" in dir(self.abtests))
 		self.assertTrue("stop" in dir(self.abtests))
 		self.assertTrue("create" in dir(self.abtests))
@@ -92,37 +91,6 @@ class TestGetByIdMethod(unittest.TestCase):
 		with self.assertRaisesRegex(AssertionError, 'The ID must not be an empty string'):
 			self.abtests.get_by_id('')
 
-# class TestGetTestStatsByIDMethod(unittest.TestCase):
-
-# 	def setUp(self):
-# 		self.abtests = ABTest(PropertyMock(
-# 			url='test_url',
-# 			team='test_team',
-# 			signature='test_signature',
-# 			token='old_value',
-# 			verify=True,
-# 			r=Mock(return_value=(200, {'token': '123'}))
-# 		))
-# 		self.id = 'test_id'
-
-# 	def test_get_test_stats_by_id_request(self):
-# 		self.abtests.get_test_stats_by_id(self.id)
-# 		self.abtests.root.r.assert_called_with(
-# 			'GET',
-# 			f'{self.abtests.root.url}/api/v1/tests/timeseries/{self.id}',
-# 			body=None,
-# 			headers=None,
-# 			verify=self.abtests.root.verify
-# 		)
-
-# 	def test_get_by_id_with_incorrect_id_type(self):
-# 		with self.assertRaisesRegex(AssertionError, 'The ID must be a string'):
-# 			self.abtests.get_test_stats_by_id(None)
-	
-# 	def test_get_by_id_with_empty_id_string(self):
-# 		with self.assertRaisesRegex(AssertionError, 'The ID must not be an empty string'):
-# 			self.abtests.get_test_stats_by_id('')
-
 class TestStartTestMethod(unittest.TestCase):
 
 	def setUp(self):
@@ -167,7 +135,7 @@ class TestStopTestMethod(unittest.TestCase):
 		))
 		self.id = 'test_id'
 
-	def test_start_request(self):
+	def test_stop_request(self):
 		self.abtests.stop(self.id)
 		self.abtests.root.r.assert_called_with(
 			'GET',
@@ -177,11 +145,11 @@ class TestStopTestMethod(unittest.TestCase):
 			verify=self.abtests.root.verify
 		)
 
-	def test_start_with_incorrect_id_type(self):
+	def test_stop_with_incorrect_id_type(self):
 		with self.assertRaisesRegex(AssertionError, 'The ID must be a string'):
 			self.abtests.stop(None)
 	
-	def test_start_with_empty_id_string(self):
+	def test_stop_with_empty_id_string(self):
 		with self.assertRaisesRegex(AssertionError, 'The ID must not be an empty string'):
 			self.abtests.stop('')
 

@@ -1,32 +1,40 @@
-# Open API python client
-### Requirements
-- Python 3( ver. 3.6.9+)
-- Request lib (pip install requests)
-### Installation
+<span align="center">
 
-```sh
-$ pip install git+https://gitlab.cybertonica.com/AF/vega.git@develop
-```
+<pre>
+    <img src="https://gitlab.cybertonica.com/AF/vega/develop/ext/logo.png" align="center"/></a>
+    
+    <div align="left">
+    <p></p>
+    <code> Python 3.6.9 (default, Nov  7 2019, 10:44:02)</code>
+    <code> >>> <strong>from CybertonicaAPI import Client</strong></code>
+    <code> >>> cbt = Client(url='https://test.cybertonica.com',team='test')</code>
+    <code> >>> status, data = cbt.auth.login('login', 'password')</code>
+    <code> >>> f'{status} | {cbt.token}'</code>
+    <code> '200 | 37d9c47b-4837-44db-9dbe-b5427eb70b43'</code>
+    <code> >>> cbt.api_user_id = 'api_user_id'</code>
+    <code> >>> cbt.api_signature = 'api_signature'</code>
+    <code> >>> cbt.af.create({"channel":"global","sub_channel":"sys"})</code>
+    <code> (200, {'action': 'ALLOW', 'channel': 'global', 'comments': ['from Default'], 'id': 'eve_global:8dd5fc24-3fc2-4e7c-a909-94afbe44931a', 'queues': [], 'rules': ['Default'], 'score': 0, 'tags': []})</code>
+    </div>
+</pre>
+</span>
 
-### Usage
-```python3
+<p>&nbsp;</p><p>&nbsp;</p>
+
+<p align="center">Cybertonica API Python Client</p>
+
+<p>&nbsp;</p>
+
+```pycon
 >>> from CybertonicaAPI import Client
->>> c = Client(url='https://<env>.cybertonica.com',team='<team>',api_key='<team_apikey>')
->>> c.auth.login('your_login','your_pass')
+>>> cbt = Client(url='https://test.cybertonica.com',team='test')
+>>> status, data = cbt.auth.login('login', 'password')
+>>> cbt.events.get_by_id('eve_global:8dd5fc24-3fc2-4e7c-a909-94afbe44931a')
+>>> (200, {'_cls': 'eve_global', 'channel': 'global', 'source': {'sub_channel': 'sys', 'channel': 'global'}, '_t': 1591179224097, '_id': 'eve_global:8dd5fc24-3fc2-4e7c-a909-94afbe44931a', .... })
+>>> cbt.lists.create({"name":"simple_list","kind":"WHITE"})
+(201, {'createdAt': 1591179867918, 'createdBy': 'user', 'id': 'e166502a-8332-4317-9421-edd9dcca7694', 'kind': 'WHITE', 'name': 'simple_list', 'size': 0})
+>>> cbt.lists.get_by_id('e166502a-8332-4317-9421-edd9dcca7694')
+(200, {'createdAt': 1591179867918, 'createdBy': 'user', 'id': 'e166502a-8332-4317-9421-edd9dcca7694', 'kind': 'WHITE', 'name': 'simple_list', 'size': 0})
+>>> cbt.lists.create("bad_structure")
+AssertionError: The data type must be a dictionary
 ```
-You can check out your success log in the following way:
-
-```python3
->>> c.auth.login('your_login','your_pass')
->>> print(c.token)
-your_token here
-```
-### How to run and test it locally
-1. git clone https://gitlab.cybertonica.com/AF/vega.git .
-2. touch ./internal_tests.py # add your test logic here
-Select command:
-3. pip install . && python3 internal_tests.py && yes | pip uninstall CybertonicaAPI # run your internal tests
-4. python3 -m unittest discover -s tests -p "*.py" && pip install . && python3 -c "from CybertonicaAPI import Client; c = Client(url='https://test.com',team='test',api_key='test')" && yes |pip uninstall CybertonicaAPI # run full cycle: tests, install, simple import, uninstall
-5. python3 -m unittest discover -s tests -p "*.py" #just tests
-6. pip install . #just install (after, you can use it as from CybertonicaAPI import Client)
-7. pdoc --html --config show_source_code=False --force CybertonicaAPI #generate docs. see html folder

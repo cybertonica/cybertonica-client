@@ -24,8 +24,6 @@ class Case:
 		url = f'{self.root.url}/api/v1.2/cases'
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
-	
-
 	def create(self, data):
 		"""Create case in the system.
 

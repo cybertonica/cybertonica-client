@@ -117,40 +117,7 @@ class List:
 		url = f'{self.root.url}/api/v1/lists/{id}'
 		return self.root.r('DELETE', url, body=None, headers=None, verify=self.root.verify)
 
-	# def import_csv(self, id, csv_filename):
-	# 	'''
-	# 	Import CSV file to the list
-
-	# 	Method: POST
-	# 	Endpoint: /api/v1/lists/import/{id}/csv
-
-	# 	:param id: list id
-	# 	:type id: str
-	# 	:param csv_file: filename(or path) for the uploading
-	# 	:type csv_file: str
-	# 	'''
-	# 	pass
-
-	# def export_csv(self, id, output):
-	# 	'''
-	# 	Export CSV file from the list
-
-	# 	Method: GET
-	# 	Endpoint: /api/v1/lists/export/{id}/csv
-
-	# 	:param id: list id
-	# 	:type id: str
-	# 	:param output: filename(or path) for the download
-	# 	:type output: str
-	# 	'''
-	# 	pass
-
-
 class Item:
-	#  #TODO:
-	# /api/v1/items/search/{pattern}/?limit={limit}   GET Search Items by pattern with limit default by 100
-	# /api/v1/items/{list}/search/{pattern}/?limit={limit}    GET Search Items by pattern and list with limit default by 100
-	# /api/v1/items/export/{id}/csv   GET Export current Items by id to csv
 	"""Item class.
 
 	Attributes:
@@ -196,22 +163,6 @@ class Item:
 
 		url = f'{self.root.url}/api/v1/items/{list_id}/item/{id}'
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
-
-	# def get_all_alive(self, list_id):
-	# 	'''
-	# 	Get all alive Items by list
-
-	# 	Method: GET
-	# 	Endpoint: /api/v1/items/{list_id}/alive
-
-	# 	:param lid: list id
-	# 	:type id: str
-	# 	'''
-	# 	assert isinstance(list_id, str), "List ID must be a string"
-	# 	assert list_id, "List ID must not be an empty string"
-
-	# 	url = f'{self.root.url}/api/v1/items/{list_id}/alive'
-	# 	return self.root.r('GET',url,body=None,headers=None,verify=self.root.verify)
 
 	def create(self, list_id, data):
 		"""Create item in the list.

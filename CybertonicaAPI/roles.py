@@ -41,8 +41,8 @@ class Role:
 		assert id, 'The ID must not be an empty string'
 
 		status_code, roles = self.get_all()
-		if status_code != 200:
-			return (status_code, subchannels)
+		if status_code >= 400:
+			return (status_code, roles)
 		
 		for role in roles:
 			if role['id'] == id:

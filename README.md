@@ -1,4 +1,4 @@
-<a href="https://aimeos.org/">
+<a href="https://cybertonica.com/">
     <img src="https://github.com/cybertonica/cybertonica-client/blob/master/ext/logo.png" alt="Cybertonica Ltd." title="Cybertonica" align="right" height="60" />
 </a>
 

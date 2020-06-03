@@ -1,5 +1,5 @@
 <a href="https://aimeos.org/">
-    <img src="https://github.com/ochaplashkin/test_for_readme/blob/master/ext/logo.png" alt="Cybertonica Ltd." title="Cybertonica" align="right" height="60" />
+    <img src="https://github.com/cybertonica/cybertonica-client/blob/master/ext/logo.png" alt="Cybertonica Ltd." title="Cybertonica" align="right" height="60" />
 </a>
 
 Cybertonica API client

@@ -1,12 +1,3 @@
-# /api/v1/tests	GET	Get all AB tests
-# /api/v1/tests/{id}	GET	Get one test by id
-# /api/v1/tests/timeseries/{id}	GET	Get statistic for AB test by id
-# /api/v1/tests/start/{id}	GET	Start AB test by id
-# /api/v1/tests/stop/{id}	GET	Stop AB test by id
-# /api/v1/tests	POST	Create AB test
-# /api/v1/tests/{id}	PUT	Update AB test
-# /api/v1/tests/{id}	DELETE	Remove AB test by id
-
 import json
 
 
@@ -50,24 +41,6 @@ class ABTest:
 
 		url = f'{self.root.url}/api/v1/tests/{id}'
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
-
-	# def get_test_stats_by_id(self, id):
-	# 	"""Get statistics for ABTest.
-
-	# 	Args:
-	# 			id: ABTest ID.
-	# 	Method:
-	# 			`GET`
-	# 	Endpoint:
-	# 			`/api/v1/tests/timeseries/{id}`
-	# 	Returns:
-	# 			See CybertonicaAPI.Client.r
-	# 	"""
-	# 	assert isinstance(id, str), 'The ID must be a string'
-	# 	assert id, 'The ID must not be an empty string'
-
-	# 	url = f'{self.root.url}/api/v1/tests/timeseries/{id}'
-	# 	return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
 	def start(self, id):
 		"""Start ABTest  by ID.

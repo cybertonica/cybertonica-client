@@ -122,25 +122,6 @@ class Auth:
 			data["invitedAt"] = 0
 		if "updatedAt" not in data:
 			data["updatedAt"] = 0
+			
 		data = json.dumps(data)
 		return self.root.r('POST', url, data, headers, verify=self.root.verify)
-
-	# def create_team(self,data,token):
-	#     '''
-	#     Create team
-
-	#     Method: POST
-	#     Endpoint: /api/v1/team
-
-	#     :param data: new team data
-	#     :type data: dict
-	#     :param token: user's token from login()['token']
-	#     :type token: str
-	#     '''
-	#     url = f'{self.base_url}/api/v1/team'
-	#     headers = {
-	#         "content-type" : "application/json",
-	#         "Authorization": "Bearer " + token
-	#     }
-	#     data = json.dumps(data)
-	#     return self.do('POST',url,data,headers,verify=self.verify)

@@ -23,13 +23,15 @@ class Client:
 	"""Main Facade class. Contains all methods.
 
 	Attributes:
-			**settings: Set of settings for the class.It must contains a
+			**settings: Set of settings for the class. It must contains a
 					required parameters: `url`, `team`. If you want to use
 					`CybertonicaAPI.afclient.AFClient` you should include
 					`api_user_id` and `api_signature` to settings.
 
 				url: target url of environment.
 				team: value of team.
+				custom_af_url: AFClient will use the specified address.
+					By default, the address is equal to a url with a port 7499.
 				api_user_id: user id for AF.
 				api_signature: value of signature for AF.
 				verify: True, if you need to ignore SSL certificates.
@@ -44,7 +46,7 @@ class Client:
 		assert 'team' in settings, 'team is required parameter'
 
 		self.url = str(settings['url'])
-		self.af_url = str(settings['custom_af_url']) if 'custom_af_url' in settings else self.url
+		self.af_url = str(settings['custom_af_url']) if 'custom_af_url' in settings else self.url+':7499'
 		self.team = str(settings['team'])
 		self.api_user_id = str(settings['api_user_id']) if 'api_user_id' in settings else ''
 		self.api_signature = str(settings['api_signature']) if 'api_signature' in settings else ''
@@ -83,15 +85,15 @@ class Client:
 				headers: request's headers. if the header is None
 						then standard headers are created:
 
-						{
-							'content-type': 'application/json;charset=utf-8',
-							'Connection':  'keep-alive',
-							'Authorization': 'Bearer <user_token>'
-						}
+					{
+						'content-type': 'application/json;charset=utf-8',
+						'Connection':  'keep-alive',
+						'Authorization': 'Bearer <user_token>'
+					}
 		Returns:
 				A tuple that contains status code and response's JSON.
-						If headers does not contain 'json' or 'text' in the Content-Type,
-						then data is None.
+						If headers does not contain `'application/json'` or
+						`'text/plain'` in the Content-Type, then data is `None`.
 		"""
 		self.log.debug(
 			"Trying %s request to %s with body=%s headers=%s files=%s verify=%s",

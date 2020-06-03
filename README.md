@@ -1,7 +1,7 @@
 <span align="center">
 
 <pre>
-    <img src="https://gitlab.cybertonica.com/AF/vega/develop/ext/logo.png" align="center"/></a>
+    <img src="https://gitlab.cybertonica.com/AF/vega/-/blob/develop/ext/logo.png" align="center"/></a>
     
     <div align="left">
     <p></p>

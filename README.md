@@ -66,6 +66,22 @@ If you need to use Anti-Fraud subsystem API, add two parameters and send the eve
 >>> cbt.af.create({"channel":"global","sub_channel":"sys"})
 (200, {'action': 'ALLOW', 'channel': 'global', ...})
 ```
+The client has logging. To see more detailed information about the client's work, do this:
+
+```python
+from CybertonicaAPI import Client
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
+cbt = Client(url='https://test.cybertonica.com',team='test')
+# DEBUG:CybertonicaAPI.client:Client has been init with {'url': 'https://test.cybertonica.com', 'team': 'test'}
+
+cbt.auth.login('login','password')
+# DEBUG:CybertonicaAPI.client:Trying POST request to https://test.cybertonica.com/api/v1/login with body={"apiUser": "login", "team": "test", "apiUserKeyHash": "password_hash"} headers={'content-type': 'application/json'} files=None verify=False
+```
+
+
 Each class or method contains a docstring
 
 ```python

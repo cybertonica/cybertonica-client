@@ -97,25 +97,28 @@ class TestClientRequestWithToMock(unittest.TestCase):
 		)
 
 	@patch('requests.request', return_value=PropertyMock())
-	def test_client_must_use_default_url(self, mock):
+	@patch('CybertonicaAPI.client.BasicAuthToken')
+	def test_client_must_use_default_url(self, auth_mock, mock):
 		self.client.r('test_method', '', 'test_body',
-					  {'test': 'test'}, 'test_files', True)
+					  {'test': 'test'}, None, True)
 
 		mock.assert_called_with(method='test_method', url=self.client.url,
 								data='test_body', headers={'test': 'test'},
-								files='test_files', verify=True)
+								files=None, verify=True, auth=auth_mock(''))
 
 	@patch('requests.request', return_value=PropertyMock())
-	def test_request_to_server_with_all_params(self, mock):
+	@patch('CybertonicaAPI.client.BasicAuthToken')
+	def test_request_to_server_with_all_params(self, auth_mock, mock):
 		self.client.r('test_method', 'test_url', 'test_body',
 					  {'test_headers': 'test'}, 'test_files', True)
 
 		mock.assert_called_with(method='test_method', url='test_url',
-								data='test_body', headers={'test_headers': 'test'},
-								files='test_files', verify=True)
+								data='test_body', headers=None,
+								files='test_files', verify=True, auth=auth_mock(''))
 
 	@patch('requests.request', return_value=PropertyMock())
-	def test_request_to_server_without_headers(self, mock):
+	@patch('CybertonicaAPI.client.BasicAuthToken')
+	def test_request_to_server_without_headers(self, auth_mock, mock):
 		self.client.r(method='test_method', url='test_url', body='test_body',
 					  headers=None, files='test_files', verify=True)
 
@@ -125,8 +128,8 @@ class TestClientRequestWithToMock(unittest.TestCase):
 			'Authorization': 'Bearer '
 		}
 		mock.assert_called_with(method='test_method', url='test_url',
-								data='test_body', headers=expected_headers,
-								files='test_files', verify=True)
+								data='test_body', headers=None,
+								files='test_files', verify=True, auth=auth_mock(''))
 
 	@patch('requests.request', return_value=PropertyMock(
 		status_code=200,
@@ -172,20 +175,6 @@ class TestClientIncorrectRequestToMock(unittest.TestCase):
 			self.client.r('')
 		with self.assertRaisesRegex(AssertionError, 'method is required parameter'):
 			self.client.r(None)
-
-	@patch('requests.request', return_value=PropertyMock())
-	def test_client_must_check_headers_by_type(self, mock):
-		with self.assertRaisesRegex(AssertionError, 'headers must be a dict'):
-			self.client.r('test_method', headers='test')
-
-	@patch('requests.request', return_value=PropertyMock())
-	def test_client_must_convert_params_to_string_if_necessary(self, mock):
-		self.client.r(method=123, url=123, body=123,
-					  headers={'test': 'test'}, files='test_files', verify=True)
-
-		mock.assert_called_with(method='123', url='123',
-								data='123', headers={'test': 'test'},
-								files='test_files', verify=True)
 
 
 if __name__ == "__main__":

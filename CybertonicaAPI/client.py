@@ -19,6 +19,13 @@ import urllib3
 # ignore SSL certificates
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+class BasicAuthToken(requests.auth.AuthBase):
+    def __init__(self, token):
+        self.token = token
+    def __call__(self, r):
+        r.headers['Authorization'] = f'Bearer {self.token}'
+        return r
+
 class Client:
 	"""Main Facade class. Contains all methods.
 
@@ -71,8 +78,7 @@ class Client:
 	def __create_headers(self):
 		return {
 			'Content-Type': 'application/json',
-			'Connection':  'keep-alive',
-			'Authorization': f'Bearer {self.token}'
+			'Connection':  'keep-alive'
 		}
 
 	def r(self, method, url=None, body=None, headers=None, files=None, verify=True):
@@ -82,18 +88,18 @@ class Client:
 				method: request's method.
 				url: target URL.
 				body: request's data after applying json.dumps().
-				headers: request's headers. if the header is None
-						then standard headers are created:
+				headers: request's headers. if the headers is None
+						(and you don't upload the file) then standard
+						headers are created:
 
 					{
-						'content-type': 'application/json;charset=utf-8',
-						'Connection':  'keep-alive',
-						'Authorization': 'Bearer <user_token>'
+						'content-type': 'application/json',
+						'Connection':  'keep-alive'
 					}
 		Returns:
 				A tuple that contains status code and response's JSON.
-						If headers does not contain `'application/json'` or
-						`'text/plain'` in the Content-Type, then data is `None`.
+						If headers does not contain `'application/json'`,
+						`'text/html'`, `'text/csv` in the Content-Type, then data is `None`.
 		"""
 		self.log.debug(
 			"Trying %s request to %s with body=%s headers=%s files=%s verify=%s",
@@ -107,18 +113,21 @@ class Client:
 		assert method, 'method is required parameter'
 
 		headers = headers if headers else self.__create_headers()
-
-		assert isinstance(headers, dict), 'headers must be a dict'
-
+		headers = None if files else headers 
 		url = url if url else self.url
 
-		r = requests.request(method=str(method), url=str(url), data=str(
-			body), headers=headers, files=files, verify=verify)
+		r = requests.request(method=method, url=url, data=
+				body, headers=headers, files=files, verify=verify, auth=BasicAuthToken(self.token))
 
-		try:
-			data = r.json() if 'json' in r.headers.get('Content-Type', '') else r.text
-		except:
-			data = None
+		data = None
+		headers = r.headers.get('Content-Type', '')
+		if 'json' in headers:
+			data = r.json()
+		if 'text/csv' in headers:
+			data = r.content
+		if 'text/html' in headers:
+			data = r.text
+	
 		return (r.status_code, data)
 
 if __name__ == "__main__":

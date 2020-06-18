@@ -222,6 +222,33 @@ class Item:
 		url = f'{self.root.url}/api/v1/items/{list_id}/item/{id}'
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
+	def get_by_pattern(self, pattern, list_id, start=0, limit=100):
+		"""Get items from list by pattern.
+
+		Args:
+				pattern: search template
+				list_id: List ID
+				start: offset for working with pagination
+				limit: limit on the number of elements in a response ( <= 100)
+		Method:
+				`GET`
+		Endpoint:
+				`/api/v1/items/{list_id}/search/{pattern}?start={start}&limit={limit}`
+		Returns:
+				See CybertonicaAPI.Client.r
+		"""
+		assert isinstance(pattern, str), 'Pattern must be a string'
+		assert pattern, 'Pattern must not be an empty string'
+		assert isinstance(list_id, str), 'List ID must be a string'
+		assert list_id, 'List ID must not be an empty string'
+		assert isinstance(start, int), 'Start value must be an integer'
+		assert isinstance(limit, int), 'Limit value must be an integer'
+		assert start >= 0, 'Start value must be greater than 0'
+		assert ((limit > 0) and (limit <= 100)), 'Limit value must be greater than 0 and less than 100'
+
+		url = f'{self.root.url}/api/v1/items/{list_id}/search/{pattern}?start={start}&limit={limit}'
+		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
+
 	def create(self, list_id, data):
 		"""Create item in the list.
 

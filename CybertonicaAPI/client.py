@@ -123,9 +123,9 @@ class Client:
 		headers = r.headers.get('Content-Type', '')
 		if 'json' in headers:
 			data = r.json()
-		if 'text/csv' in headers:
+		if 'csv' in headers:
 			data = r.content
-		if 'text/html' in headers:
+		if 'plain' in headers or 'html' in headers:
 			data = r.text
 	
 		return (r.status_code, data)

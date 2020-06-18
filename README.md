@@ -152,6 +152,7 @@ client.lists
         delete
         get_all
         get_by_id
+        get_by_pattern
         update
     create
     delete

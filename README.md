@@ -158,6 +158,8 @@ client.lists
     get_all
     get_by_id
     update
+    import_csv
+    export_csv
 client.policies
     create
     delete

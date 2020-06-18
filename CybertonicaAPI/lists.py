@@ -1,4 +1,5 @@
 import json
+import requests
 
 
 class List:
@@ -117,6 +118,63 @@ class List:
 		url = f'{self.root.url}/api/v1/lists/{id}'
 		return self.root.r('DELETE', url, body=None, headers=None, verify=self.root.verify)
 
+	def import_csv(self, filename, list_id):
+		"""Import CSV file to the list.
+
+		Args:
+				filename: CSV file name or full path (use pwd)
+				list_id: The ID of the list.
+		Method:
+				`POST`
+		Endpoint:
+				`/api/v1/items/{list_id}/{id}`
+		Returns:
+				See CybertonicaAPI.Client.r
+		"""
+		assert isinstance(filename, str), "File name must be a string"
+		assert filename, "The file name must not be an empty string"
+		assert '.csv' in filename, "The file must have the CSV extension"
+		assert isinstance(list_id, str), "List ID must be a string"
+		assert list_id, "List ID must not be an empty string"
+
+		files = {
+			'files': open(filename, 'rb')
+		}
+		url = f'{self.root.url}/api/v1/lists/import/{list_id}/csv'
+		return self.root.r('POST', url, body=None, headers=None, verify=self.root.verify, files=files)
+	
+	def export_csv(self, filename, list_id):
+		"""Export CSV file to the list.
+
+		Args:
+				filename: CSV file name or full path (use pwd)
+				list_id: The ID of the list.
+		Method:
+				`GET`
+		Endpoint:
+				`/api/v1/lists/export/{list_id}/csv`
+		Returns:
+				Tuple (status, info), where status is the response state;
+					info is information about the exception error,
+					or `0` if the process was successful.
+		"""
+		assert isinstance(filename, str), "File name must be a string"
+		assert filename, "The file name must not be an empty string"
+		assert '.csv' in filename, "The file must have the CSV extension"
+		assert isinstance(list_id, str), "List ID must be a string"
+		assert list_id, "List ID must not be an empty string"
+		
+		try:
+			url = f'{self.root.url}/api/v1/lists/export/{list_id}/csv'
+			with open(filename, "wb") as file:
+				status, data  = self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
+				file.write(data)
+			file.close()
+		except requests.exceptions.HTTPError as err:
+			return status, err
+		
+		return status, 0
+		
 class Item:
 	"""Item class.
 

@@ -1,6 +1,6 @@
 # Open API python client
 ### Requirements
-- Python 3( ver. 3.6.9+)
+- Python 3 ( ver. 3.6.9+)
 - Request lib (pip install requests)
 ### Installation
 

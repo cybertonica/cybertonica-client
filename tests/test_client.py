@@ -39,6 +39,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'cases'))
 		self.assertTrue(hasattr(self.client, 'settings'))
 		self.assertTrue(hasattr(self.client, 'queues'))
+		self.assertTrue(hasattr(self.client, 'sessions'))
 
 	def test_types_of_fields_inside_client_object(self):
 		self.assertIsInstance(self.client.url, str)
@@ -57,6 +58,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client.cases, object)
 		self.assertIsInstance(self.client.settings, object)
 		self.assertIsInstance(self.client.queues, object)
+		self.assertIsInstance(self.client.sessions, object)
 
 	def test_values_of_fields_inside_client_object(self):
 		self.assertEqual(self.client.url, 'https://test.com')

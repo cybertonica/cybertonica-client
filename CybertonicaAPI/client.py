@@ -11,6 +11,7 @@ from CybertonicaAPI.afclient import AFClient
 from CybertonicaAPI.cases import Case
 from CybertonicaAPI.settings import Settings
 from CybertonicaAPI.queues import Queue
+from CybertonicaAPI.sessions import Session
 
 import logging
 import json
@@ -74,6 +75,7 @@ class Client:
 		self.cases = Case(self)
 		self.settings = Settings(self)
 		self.queues = Queue(self)
+		self.sessions = Session(self)
 
 	def __create_headers(self):
 		return {

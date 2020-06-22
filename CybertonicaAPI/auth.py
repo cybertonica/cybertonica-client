@@ -1,6 +1,7 @@
 import json
 from types import FunctionType, LambdaType
 from email.utils import parseaddr
+import time
 
 
 class Auth:
@@ -43,6 +44,7 @@ class Auth:
 			'POST', url, data, headers, verify=self.root.verify)
 		if status_code == 200 or status_code == 201:
 			self.root.token = data['token']
+			self.root.login_time = time.monotonic() 
 		return (status_code, data)
 
 	def logout(self):
@@ -63,6 +65,7 @@ class Auth:
 			'POST', url, headers, body=None, verify=self.root.verify)
 		if status_code < 400:
 			self.root.token = ''
+			self.root.login_time = 0
 		return (status_code, data)
 
 	def recovery_password(self, team, email):

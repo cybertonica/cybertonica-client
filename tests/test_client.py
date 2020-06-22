@@ -20,6 +20,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client, client.Client)
 		self.assertTrue("r" in dir(self.client))
 		self.assertFalse("__create_headers" in dir(self.client))
+		self.assertFalse("__is_expired_session" in dir(self.client))
 
 	def test_attributes_inside_client_object(self):
 		self.assertTrue(hasattr(self.client, 'url'))
@@ -27,6 +28,8 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'token'))
 		self.assertTrue(hasattr(self.client, 'team'))
 		self.assertTrue(hasattr(self.client, 'dev_mode'))
+		self.assertTrue(hasattr(self.client, 'login_time'))
+		self.assertTrue(hasattr(self.client, 'ttl'))
 		self.assertTrue(hasattr(self.client, 'auth'))
 		self.assertTrue(hasattr(self.client, 'subchannels'))
 		self.assertTrue(hasattr(self.client, 'lists'))
@@ -39,12 +42,15 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'cases'))
 		self.assertTrue(hasattr(self.client, 'settings'))
 		self.assertTrue(hasattr(self.client, 'queues'))
+		self.assertTrue(hasattr(self.client, 'sessions'))
 
 	def test_types_of_fields_inside_client_object(self):
 		self.assertIsInstance(self.client.url, str)
 		self.assertIsInstance(self.client.verify, bool)
 		self.assertIsInstance(self.client.token, str)
 		self.assertIsInstance(self.client.team, str)
+		self.assertIsInstance(self.client.login_time, int)
+		self.assertIsInstance(self.client.ttl, int)
 		self.assertIsInstance(self.client.auth, object)
 		self.assertIsInstance(self.client.subchannels, object)
 		self.assertIsInstance(self.client.lists, object)
@@ -57,6 +63,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client.cases, object)
 		self.assertIsInstance(self.client.settings, object)
 		self.assertIsInstance(self.client.queues, object)
+		self.assertIsInstance(self.client.sessions, object)
 
 	def test_values_of_fields_inside_client_object(self):
 		self.assertEqual(self.client.url, 'https://test.com')
@@ -66,6 +73,8 @@ class TestInitClient(unittest.TestCase):
 		self.assertEqual(self.client.api_user_id, '')
 		self.assertEqual(self.client.api_signature, '')
 		self.assertFalse(self.client.dev_mode)
+		self.assertEqual(self.client.login_time, 0)
+		self.assertEqual(self.client.ttl, 840)
 
 
 class TestBadInitClient(unittest.TestCase):
@@ -97,25 +106,28 @@ class TestClientRequestWithToMock(unittest.TestCase):
 		)
 
 	@patch('requests.request', return_value=PropertyMock())
-	def test_client_must_use_default_url(self, mock):
+	@patch('CybertonicaAPI.client.BasicAuthToken')
+	def test_client_must_use_default_url(self, auth_mock, mock):
 		self.client.r('test_method', '', 'test_body',
-					  {'test': 'test'}, 'test_files', True)
+					  {'test': 'test'}, None, True)
 
 		mock.assert_called_with(method='test_method', url=self.client.url,
 								data='test_body', headers={'test': 'test'},
-								files='test_files', verify=True)
+								files=None, verify=True, auth=auth_mock(''))
 
 	@patch('requests.request', return_value=PropertyMock())
-	def test_request_to_server_with_all_params(self, mock):
+	@patch('CybertonicaAPI.client.BasicAuthToken')
+	def test_request_to_server_with_all_params(self, auth_mock, mock):
 		self.client.r('test_method', 'test_url', 'test_body',
 					  {'test_headers': 'test'}, 'test_files', True)
 
 		mock.assert_called_with(method='test_method', url='test_url',
-								data='test_body', headers={'test_headers': 'test'},
-								files='test_files', verify=True)
+								data='test_body', headers=None,
+								files='test_files', verify=True, auth=auth_mock(''))
 
 	@patch('requests.request', return_value=PropertyMock())
-	def test_request_to_server_without_headers(self, mock):
+	@patch('CybertonicaAPI.client.BasicAuthToken')
+	def test_request_to_server_without_headers(self, auth_mock, mock):
 		self.client.r(method='test_method', url='test_url', body='test_body',
 					  headers=None, files='test_files', verify=True)
 
@@ -125,8 +137,8 @@ class TestClientRequestWithToMock(unittest.TestCase):
 			'Authorization': 'Bearer '
 		}
 		mock.assert_called_with(method='test_method', url='test_url',
-								data='test_body', headers=expected_headers,
-								files='test_files', verify=True)
+								data='test_body', headers=None,
+								files='test_files', verify=True, auth=auth_mock(''))
 
 	@patch('requests.request', return_value=PropertyMock(
 		status_code=200,
@@ -172,20 +184,6 @@ class TestClientIncorrectRequestToMock(unittest.TestCase):
 			self.client.r('')
 		with self.assertRaisesRegex(AssertionError, 'method is required parameter'):
 			self.client.r(None)
-
-	@patch('requests.request', return_value=PropertyMock())
-	def test_client_must_check_headers_by_type(self, mock):
-		with self.assertRaisesRegex(AssertionError, 'headers must be a dict'):
-			self.client.r('test_method', headers='test')
-
-	@patch('requests.request', return_value=PropertyMock())
-	def test_client_must_convert_params_to_string_if_necessary(self, mock):
-		self.client.r(method=123, url=123, body=123,
-					  headers={'test': 'test'}, files='test_files', verify=True)
-
-		mock.assert_called_with(method='123', url='123',
-								data='123', headers={'test': 'test'},
-								files='test_files', verify=True)
 
 
 if __name__ == "__main__":

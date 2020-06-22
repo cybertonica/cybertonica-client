@@ -7,10 +7,6 @@ from unittest.mock import patch, PropertyMock, Mock, MagicMock
 
 sys.path.append(os.getcwd())
 
-# /api/v1/queueus	GET	Get all Queues
-# api/v1/queues/count	GET	Get element count by queues
-# /api/v1/queueus/{id}/?start={start}&limit={limit}	GET	Get all queue items by params
-# /api/v1/queueus	DELETE	Remove Queue by name
 class TestInitQueueClass(unittest.TestCase):
 
 	def setUp(self):

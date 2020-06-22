@@ -188,3 +188,24 @@ class User:
 
 		user["roles"].remove(role)
 		return self.update(id, user)
+	
+	def set_new_password(self, password):
+		"""Set a new user password. If the new password matches
+			the last 6 passwords that were used, it will not be overwritten.
+
+		Args:
+				password: A new password value.
+		Method:
+				`PUT`
+		Endpoint:
+				`/api/v1/users/attributes/password`
+		Returns:
+				See CybertonicaAPI.Client.r
+		"""
+		assert isinstance(password, str), 'Password value must be a string'
+		assert password, 'Password value must not be an empty string'
+		assert len(password) > 8, 'Length of password value must be greater  than 8'
+
+		url = f'{self.root.url}/api/v1/users/attributes/password'
+		data = json.dumps({"password":password})
+		return self.root.r('PUT', url, body=data, headers=None, verify=self.root.verify)

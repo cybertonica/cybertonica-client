@@ -11,16 +11,6 @@ class Event:
 	def __init__(self, root):
 		self.root = root
 
-	# def get_by_id_and_fk(self,id,fks):
-	#     '''
-	#     Get events by id and fks
-
-	#     Method: GET
-	#     Endpoint: /api/v1/events/?id={id}&fk={fk}
-	#     '''
-	#     url = f'{self.root.url}/api/v1/events/?id={id}&fk={fks}'
-	#     return self.root.r('GET', url, body=None, headers=None,verify=self.root.verify)
-
 	def get_by_id(self, id):
 		"""Get event from system by ID.
 
@@ -68,17 +58,6 @@ class Event:
 
 		url = f'{self.root.url}/api/v1.1/events/queue/{queue_name}?start={str(start)}&limit={str(limit)}'
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
-
-	# def get_by_ids_array(self,ids):
-	#     '''
-	#     Get events by ids array included by data
-
-	#     Method: POST
-	#     Endpoint: /api/v1/events/{queue}
-	#     '''
-	#     url = f'{self.root.url}/api/v1/events' #??? #TODO
-	#     data = json.dumps(ids)
-	#     return self.root.r('POST',url,data,headers=None, verify=self.root.verify)
 
 	def bulk_review(self, ids, comment, status):
 		"""Setting an operation status to the events.

@@ -24,8 +24,8 @@ class TestInitItemClass(unittest.TestCase):
 		self.assertIsInstance(self.items, Item)
 
 		self.assertTrue("get_all" in dir(self.items))
-		# self.assertTrue("get_all_alive" in dir(self.items))
 		self.assertTrue("get_by_id" in dir(self.items))
+		self.assertTrue("get_by_pattern" in dir(self.items))
 		self.assertTrue("create" in dir(self.items))
 		self.assertTrue("update" in dir(self.items))
 		self.assertTrue("delete" in dir(self.items))
@@ -105,37 +105,6 @@ class TestGetByIDMethod(unittest.TestCase):
 	def test_get_by_id_with_empty_id_string(self):
 		with self.assertRaisesRegex(AssertionError, 'The ID must not be an empty string'):
 			self.items.get_by_id(self.list_id, '')
-
-# class TestGetAllAliveMethod(unittest.TestCase):
-
-# 	def setUp(self):
-# 		self.items = Item(PropertyMock(
-# 			url='test_url',
-# 			team='test_team',
-# 			signature='test_signature',
-# 			token='old_value',
-# 			verify=True,
-# 			r=Mock(return_value=(200, {'token': '123'}))
-# 		))
-# 		self.list_id = 'list_id'
-
-# 	def test_get_all_alive_request(self):
-# 		self.items.get_all_alive(self.list_id)
-# 		self.items.root.r.assert_called_with(
-# 			'GET',
-# 			f'{self.items.root.url}/api/v1/items/{self.list_id}/alive',
-# 			body=None,
-# 			headers=None,
-# 			verify=self.items.root.verify
-# 		)
-
-# 	def test_get_all_alive_with_incorrect_list_id_type(self):
-# 		with self.assertRaisesRegex(AssertionError, 'List ID must be a string'):
-# 			self.items.get_all_alive(123)
-	
-# 	def test_get_all_alive_with_empty_list_id_string(self):
-# 		with self.assertRaisesRegex(AssertionError, 'List ID must not be an empty string'):
-# 			self.items.get_all_alive('')
 
 class TestCreateMethod(unittest.TestCase):
 
@@ -265,3 +234,65 @@ class TestDeleteMethod(unittest.TestCase):
 	def test_update_with_empty_id_string(self):
 		with self.assertRaisesRegex(AssertionError, 'The ID must not be an empty string'):
 			self.items.delete(self.list_id, '')
+
+class TestGetByPatternMethod(unittest.TestCase):
+
+	def setUp(self):
+		self.items = Item(PropertyMock(
+			url='test_url',
+			team='test_team',
+			signature='test_signature',
+			token='old_value',
+			verify=True,
+			r=Mock(return_value=(200, {'token': '123'}))
+		))
+		self.list_id = 'test_id'
+		self.pattern = 'test'
+		self.start = 0
+		self.limit = 1
+
+	def test_get_by_pattern_request(self):
+		self.items.get_by_pattern(self.pattern, self.list_id, self.start, self.limit)
+		self.items.root.r.assert_called_with(
+			'GET',
+			f'{self.items.root.url}/api/v1/items/{self.list_id}/search/{self.pattern}?start={self.start}&limit={self.limit}',
+			body=None,
+			headers=None,
+			verify=self.items.root.verify
+		)
+
+	def test_get_by_pattern_with_incorrect_pattern_type(self):
+		with self.assertRaisesRegex(AssertionError, 'Pattern must be a string'):
+			self.items.get_by_pattern({'pattern'}, self.list_id, self.start, self.limit)
+	
+	def test_get_by_pattern_with_empty_pattern(self):
+		with self.assertRaisesRegex(AssertionError, 'Pattern must not be an empty string'):
+			self.items.get_by_pattern('', self.list_id, self.start, self.limit)
+	
+	def test_get_by_pattern_with_incorrect_list_id_type(self):
+		with self.assertRaisesRegex(AssertionError, 'List ID must be a string'):
+			self.items.get_by_pattern(self.pattern, 123, self.start, self.limit)
+	
+	def test_get_by_pattern_with_empty_list_id(self):
+		with self.assertRaisesRegex(AssertionError, 'List ID must not be an empty string'):
+			self.items.get_by_pattern(self.pattern, '', self.start, self.limit)
+	
+	def test_get_by_pattern_with_incorrect_start_value(self):
+		with self.assertRaisesRegex(AssertionError, 'Start value must be an integer'):
+			self.items.get_by_pattern(self.pattern, self.list_id, '123', self.limit)
+	
+	def test_get_by_pattern_with_incorrect_limit_value(self):
+		with self.assertRaisesRegex(AssertionError, 'Limit value must be an integer'):
+			self.items.get_by_pattern(self.pattern, self.list_id, self.start, '123')
+	
+	def test_get_by_pattern_with_negative_start_value(self):
+		with self.assertRaisesRegex(AssertionError, 'Start value must be greater than 0'):
+			self.items.get_by_pattern(self.pattern, self.list_id, -1, self.limit)
+	
+	def test_get_by_pattern_with_negative_limit_value(self):
+		with self.assertRaisesRegex(AssertionError, 'Limit value must be greater than 0'):
+			self.items.get_by_pattern(self.pattern, self.list_id, self.start, -1)
+	
+	def test_get_by_pattern_with_great_than_100_limit(self):
+		with self.assertRaisesRegex(AssertionError, 'Limit value must be greater than 0'):
+			self.items.get_by_pattern(self.pattern, self.list_id, self.start, 101)

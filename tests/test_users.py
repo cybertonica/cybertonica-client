@@ -29,7 +29,8 @@ class TestInitUserClass(unittest.TestCase):
 		self.assertTrue("update" in dir(self.users))
 		self.assertTrue("delete" in dir(self.users))
 		self.assertTrue("remove_role" in dir(self.users))
-		self.assertTrue("remove_role" in dir(self.users))
+		self.assertTrue("add_role" in dir(self.users))
+		self.assertTrue("set_new_password" in dir(self.users))
 
 	def test_attributes_inside_auth_object(self):
 		self.assertTrue(hasattr(self.users, 'root'))
@@ -332,3 +333,38 @@ class TestRemoveRoleMethod(unittest.TestCase):
 	def test_remove_role_already_has_not_target_role(self, get_mock):
 		with self.assertRaisesRegex(AssertionError, 'The user already has not a role'):
 			self.users.remove_role(self.id,self.role)
+
+class TestResetPasswordMethod(unittest.TestCase):
+
+	def setUp(self):
+		self.users = User(PropertyMock(
+			url='test_url',
+			team='test_team',
+			signature='test_signature',
+			token='old_value',
+			verify=True,
+			r=Mock(return_value=(200, {'token': '123'}))
+		))
+		self.new_password = 'AaBbCcDd12345'
+
+	def test_set_new_password_request(self):
+		self.users.set_new_password(self.new_password)
+		self.users.root.r.assert_called_with(
+			'PUT',
+			f'{self.users.root.url}/api/v1/users/attributes/password',
+			body=json.dumps({'password': self.new_password}),
+			headers=None,
+			verify=self.users.root.verify
+		)
+
+	def test_set_new_password_with_incorrect_password_type(self):
+		with self.assertRaisesRegex(AssertionError, 'Password value must be a string'):
+			self.users.set_new_password(123)
+	
+	def test_set_new_password_with_empty_id_string(self):
+		with self.assertRaisesRegex(AssertionError, 'Password value must not be an empty string'):
+			self.users.set_new_password('')
+		
+	def test_set_new_password_with_short_password_value(self):
+		with self.assertRaisesRegex(AssertionError, 'Length of password value must be greater  than 8'):
+			self.users.set_new_password('Test')

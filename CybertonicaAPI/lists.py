@@ -1,4 +1,5 @@
 import json
+import requests
 
 
 class List:
@@ -117,40 +118,64 @@ class List:
 		url = f'{self.root.url}/api/v1/lists/{id}'
 		return self.root.r('DELETE', url, body=None, headers=None, verify=self.root.verify)
 
-	# def import_csv(self, id, csv_filename):
-	# 	'''
-	# 	Import CSV file to the list
+	def import_csv(self, filename, list_id):
+		"""Import CSV file to the list.
 
-	# 	Method: POST
-	# 	Endpoint: /api/v1/lists/import/{id}/csv
+		Args:
+				filename: CSV file name or full path (use pwd)
+				list_id: The ID of the list.
+		Method:
+				`POST`
+		Endpoint:
+				`/api/v1/items/{list_id}/{id}`
+		Returns:
+				See CybertonicaAPI.Client.r
+		"""
+		assert isinstance(filename, str), "File name must be a string"
+		assert filename, "The file name must not be an empty string"
+		assert '.csv' in filename, "The file must have the CSV extension"
+		assert isinstance(list_id, str), "List ID must be a string"
+		assert list_id, "List ID must not be an empty string"
 
-	# 	:param id: list id
-	# 	:type id: str
-	# 	:param csv_file: filename(or path) for the uploading
-	# 	:type csv_file: str
-	# 	'''
-	# 	pass
+		files = {
+			'files': open(filename, 'rb')
+		}
+		url = f'{self.root.url}/api/v1/lists/import/{list_id}/csv'
+		return self.root.r('POST', url, body=None, headers=None, verify=self.root.verify, files=files)
+	
+	def export_csv(self, filename, list_id):
+		"""Export CSV file to the list.
 
-	# def export_csv(self, id, output):
-	# 	'''
-	# 	Export CSV file from the list
-
-	# 	Method: GET
-	# 	Endpoint: /api/v1/lists/export/{id}/csv
-
-	# 	:param id: list id
-	# 	:type id: str
-	# 	:param output: filename(or path) for the download
-	# 	:type output: str
-	# 	'''
-	# 	pass
-
-
+		Args:
+				filename: CSV file name or full path (use pwd)
+				list_id: The ID of the list.
+		Method:
+				`GET`
+		Endpoint:
+				`/api/v1/lists/export/{list_id}/csv`
+		Returns:
+				Tuple (status, info), where status is the response state;
+					info is information about the exception error,
+					or `0` if the process was successful.
+		"""
+		assert isinstance(filename, str), "File name must be a string"
+		assert filename, "The file name must not be an empty string"
+		assert '.csv' in filename, "The file must have the CSV extension"
+		assert isinstance(list_id, str), "List ID must be a string"
+		assert list_id, "List ID must not be an empty string"
+		
+		try:
+			url = f'{self.root.url}/api/v1/lists/export/{list_id}/csv'
+			with open(filename, "wb") as file:
+				status, data  = self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
+				file.write(data)
+			file.close()
+		except requests.exceptions.HTTPError as err:
+			return status, err
+		
+		return status, 0
+		
 class Item:
-	#  #TODO:
-	# /api/v1/items/search/{pattern}/?limit={limit}   GET Search Items by pattern with limit default by 100
-	# /api/v1/items/{list}/search/{pattern}/?limit={limit}    GET Search Items by pattern and list with limit default by 100
-	# /api/v1/items/export/{id}/csv   GET Export current Items by id to csv
 	"""Item class.
 
 	Attributes:
@@ -197,21 +222,32 @@ class Item:
 		url = f'{self.root.url}/api/v1/items/{list_id}/item/{id}'
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
-	# def get_all_alive(self, list_id):
-	# 	'''
-	# 	Get all alive Items by list
+	def get_by_pattern(self, pattern, list_id, start=0, limit=100):
+		"""Get items from list by pattern.
 
-	# 	Method: GET
-	# 	Endpoint: /api/v1/items/{list_id}/alive
+		Args:
+				pattern: search template
+				list_id: List ID
+				start: offset for working with pagination
+				limit: limit on the number of elements in a response ( <= 100)
+		Method:
+				`GET`
+		Endpoint:
+				`/api/v1/items/{list_id}/search/{pattern}?start={start}&limit={limit}`
+		Returns:
+				See CybertonicaAPI.Client.r
+		"""
+		assert isinstance(pattern, str), 'Pattern must be a string'
+		assert pattern, 'Pattern must not be an empty string'
+		assert isinstance(list_id, str), 'List ID must be a string'
+		assert list_id, 'List ID must not be an empty string'
+		assert isinstance(start, int), 'Start value must be an integer'
+		assert isinstance(limit, int), 'Limit value must be an integer'
+		assert start >= 0, 'Start value must be greater than 0'
+		assert ((limit > 0) and (limit <= 100)), 'Limit value must be greater than 0 and less than 100'
 
-	# 	:param lid: list id
-	# 	:type id: str
-	# 	'''
-	# 	assert isinstance(list_id, str), "List ID must be a string"
-	# 	assert list_id, "List ID must not be an empty string"
-
-	# 	url = f'{self.root.url}/api/v1/items/{list_id}/alive'
-	# 	return self.root.r('GET',url,body=None,headers=None,verify=self.root.verify)
+		url = f'{self.root.url}/api/v1/items/{list_id}/search/{pattern}?start={start}&limit={limit}'
+		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
 	def create(self, list_id, data):
 		"""Create item in the list.

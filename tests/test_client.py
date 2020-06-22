@@ -20,6 +20,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client, client.Client)
 		self.assertTrue("r" in dir(self.client))
 		self.assertFalse("__create_headers" in dir(self.client))
+		self.assertFalse("__is_expired_session" in dir(self.client))
 
 	def test_attributes_inside_client_object(self):
 		self.assertTrue(hasattr(self.client, 'url'))
@@ -27,6 +28,8 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'token'))
 		self.assertTrue(hasattr(self.client, 'team'))
 		self.assertTrue(hasattr(self.client, 'dev_mode'))
+		self.assertTrue(hasattr(self.client, 'login_time'))
+		self.assertTrue(hasattr(self.client, 'ttl'))
 		self.assertTrue(hasattr(self.client, 'auth'))
 		self.assertTrue(hasattr(self.client, 'subchannels'))
 		self.assertTrue(hasattr(self.client, 'lists'))
@@ -46,6 +49,8 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client.verify, bool)
 		self.assertIsInstance(self.client.token, str)
 		self.assertIsInstance(self.client.team, str)
+		self.assertIsInstance(self.client.login_time, int)
+		self.assertIsInstance(self.client.ttl, int)
 		self.assertIsInstance(self.client.auth, object)
 		self.assertIsInstance(self.client.subchannels, object)
 		self.assertIsInstance(self.client.lists, object)
@@ -68,6 +73,8 @@ class TestInitClient(unittest.TestCase):
 		self.assertEqual(self.client.api_user_id, '')
 		self.assertEqual(self.client.api_signature, '')
 		self.assertFalse(self.client.dev_mode)
+		self.assertEqual(self.client.login_time, 0)
+		self.assertEqual(self.client.ttl, 840)
 
 
 class TestBadInitClient(unittest.TestCase):

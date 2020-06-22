@@ -17,6 +17,7 @@ import logging
 import json
 import requests
 import urllib3
+import time
 # ignore SSL certificates
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -62,6 +63,9 @@ class Client:
 		self.token = ''
 		self.dev_mode = bool(settings['dev_mode']) if 'dev_mode' in settings else False
 		
+		self.login_time = 0
+		self.ttl = 840 # Session TTL == 14 mins
+		
 		self.auth = Auth(self)
 		self.subchannels = Subchannel(self)
 		self.lists = List(self)
@@ -82,6 +86,11 @@ class Client:
 			'Content-Type': 'application/json',
 			'Connection':  'keep-alive'
 		}
+	def __is_expired_session(self):
+		if self.login_time:
+			if int(time.monotonic() - self.login_time) >= self.ttl:
+				self.log.debug('Refresh token')
+				self.sessions.refresh()
 
 	def r(self, method, url=None, body=None, headers=None, files=None, verify=True):
 		"""Main function for the sending requests.
@@ -113,6 +122,7 @@ class Client:
 			verify
 		)
 		assert method, 'method is required parameter'
+		self.__is_expired_session()
 
 		headers = headers if headers else self.__create_headers()
 		headers = None if files else headers 

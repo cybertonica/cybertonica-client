@@ -4,7 +4,7 @@
 
 Cybertonica API client
 ======================
-[![Python 3.6.9](https://img.shields.io/badge/python-3.6.9-blue.svg)](https://www.python.org/downloads/release/python-369/) ![version](https://img.shields.io/badge/version-0.1-blue) ![Stage: Alpha](https://img.shields.io/badge/stage-alpha-blueviolet)
+[![Python 3.6.9](https://img.shields.io/badge/python-3.6.9-blue.svg)](https://www.python.org/downloads/release/python-369/) ![version](https://img.shields.io/badge/version-0.2-blue) ![Stage: Alpha](https://img.shields.io/badge/stage-alpha-blueviolet)
 
 ## Table of content
 
@@ -79,6 +79,13 @@ cbt = Client(url='https://test.cybertonica.com',team='test')
 
 cbt.auth.login('login','password')
 # DEBUG:CybertonicaAPI.client:Trying POST request to https://test.cybertonica.com/api/v1/login with body={"apiUser": "login", "team": "test", "apiUserKeyHash": "password_hash"} headers={'content-type': 'application/json'} files=None verify=False
+
+# Case: the server is not available. All errors will be saved in logs.
+cbt = Client(url='https://test-test-test.cybertonica.com',team='test')
+# DEBUG:CybertonicaAPI.client:Client has been init with {'url': 'https://test-test-test.cybertonica.com', 'team': 'test'}
+# DEBUG:CybertonicaAPI.client:Trying GET request to https://test-test-test.cybertonica.com/api/v1/info with body=None headers=None files=None verify=True
+# DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): test-test-test.cybertonica.com:443
+# DEBUG:CybertonicaAPI.client:ConnectionError(MaxRetryError("HTTPSConnectionPool(host='test-test-test.cybertonica.com', port=443): Max retries exceeded with url: /api/v1/info (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f3f148b82b0>: Failed to establish a new connection: [Errno -2] Name or service not known',))",),)
 ```
 
 
@@ -158,6 +165,7 @@ client.lists
     delete
     get_all
     get_by_id
+    kinds
     update
     import_csv
     export_csv

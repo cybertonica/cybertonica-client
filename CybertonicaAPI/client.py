@@ -18,6 +18,7 @@ import json
 import requests
 import urllib3
 import time
+
 # ignore SSL certificates
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -52,7 +53,9 @@ class Client:
 		self.log.debug('Client has been init with %s',settings)
 
 		assert 'url' in settings, 'url is required parameter'
+		assert isinstance(settings['url'], str), 'url value must be a string'
 		assert 'team' in settings, 'team is required parameter'
+		assert isinstance(settings['team'], str), 'team value must be a string'
 
 		self.url = str(settings['url'])
 		self.af_url = str(settings['custom_af_url']) if 'custom_af_url' in settings else self.url+':7499'
@@ -60,11 +63,11 @@ class Client:
 		self.api_user_id = str(settings['api_user_id']) if 'api_user_id' in settings else ''
 		self.api_signature = str(settings['api_signature']) if 'api_signature' in settings else ''
 		self.verify = bool(settings['verify']) if 'verify' in settings else True
+
 		self.token = ''
-		self.dev_mode = bool(settings['dev_mode']) if 'dev_mode' in settings else False
-		
 		self.login_time = 0
 		self.ttl = 840 # Session TTL == 14 mins
+		self.service_info = self.__get_service_info()
 		
 		self.auth = Auth(self)
 		self.subchannels = Subchannel(self)
@@ -91,6 +94,15 @@ class Client:
 			if int(time.monotonic() - self.login_time) >= self.ttl:
 				self.log.debug('Refresh token')
 				self.sessions.refresh()
+	
+	def __get_service_info(self):
+		try:
+			status, data = self.r('GET',self.url+'/api/v1/info')
+			return data if status < 400 else {}
+		except Exception as e:
+			self.log.debug('%s',repr(e))
+			return {}
+
 
 	def r(self, method, url=None, body=None, headers=None, files=None, verify=True):
 		"""Main function for the sending requests.
@@ -127,20 +139,23 @@ class Client:
 		headers = headers if headers else self.__create_headers()
 		headers = None if files else headers 
 		url = url if url else self.url
+		try:
+			r = requests.request(method=method, url=url, data=
+					body, headers=headers, files=files, verify=verify, auth=BasicAuthToken(self.token))
 
-		r = requests.request(method=method, url=url, data=
-				body, headers=headers, files=files, verify=verify, auth=BasicAuthToken(self.token))
-
-		data = None
-		headers = r.headers.get('Content-Type', '')
-		if 'json' in headers:
-			data = r.json()
-		if 'csv' in headers:
-			data = r.content
-		if 'plain' in headers or 'html' in headers:
-			data = r.text
+			data = None
+			headers = r.headers.get('Content-Type', '')
+			if 'json' in headers:
+				data = r.json()
+			if 'csv' in headers:
+				data = r.content
+			if 'plain' in headers or 'html' in headers:
+				data = r.text
 	
-		return (r.status_code, data)
+			return (r.status_code, data)
+		except Exception as e:
+			self.log.debug('%s', repr(e))
+			return (500, None)
 
 if __name__ == "__main__":
 	pass

@@ -1,4 +1,5 @@
 import json
+import time
 
 class Session:
 	"""Session class.
@@ -38,7 +39,7 @@ class Session:
 
 	def refresh(self):
 		"""Refresh current session. Overwrites the token value
-			in the client if the request is successful.
+			and login time in the client if the request is successful.
 
 		Method:
 				`GET`
@@ -49,11 +50,13 @@ class Session:
 					flag is an operation success indicator
 		"""
 		url = f'{self.root.url}/api/v1/sessions/refresh'
+		self.root.login_time = 0
 		status, data = self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 		try:
 			if status < 400:
 				if 'token' in data:
 					self.root.token = data['token']
+					self.root.login_time = time.monotonic()
 					return status, True
 		except:
 			return status, False

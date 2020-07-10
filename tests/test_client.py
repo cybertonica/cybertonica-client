@@ -12,7 +12,7 @@ class TestInitClient(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
 		cls.client = client.Client(
-			url='https://test.com',
+			url='test',
 			team='test'
 			)
 
@@ -20,13 +20,17 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client, client.Client)
 		self.assertTrue("r" in dir(self.client))
 		self.assertFalse("__create_headers" in dir(self.client))
+		self.assertFalse("__is_expired_session" in dir(self.client))
+		self.assertFalse("__get_service_info" in dir(self.client))
 
 	def test_attributes_inside_client_object(self):
 		self.assertTrue(hasattr(self.client, 'url'))
 		self.assertTrue(hasattr(self.client, 'verify'))
 		self.assertTrue(hasattr(self.client, 'token'))
 		self.assertTrue(hasattr(self.client, 'team'))
-		self.assertTrue(hasattr(self.client, 'dev_mode'))
+		self.assertTrue(hasattr(self.client, 'login_time'))
+		self.assertTrue(hasattr(self.client, 'ttl'))
+		self.assertTrue(hasattr(self.client, 'service_info'))
 		self.assertTrue(hasattr(self.client, 'auth'))
 		self.assertTrue(hasattr(self.client, 'subchannels'))
 		self.assertTrue(hasattr(self.client, 'lists'))
@@ -46,6 +50,9 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client.verify, bool)
 		self.assertIsInstance(self.client.token, str)
 		self.assertIsInstance(self.client.team, str)
+		self.assertIsInstance(self.client.login_time, int)
+		self.assertIsInstance(self.client.service_info, dict)
+		self.assertIsInstance(self.client.ttl, int)
 		self.assertIsInstance(self.client.auth, object)
 		self.assertIsInstance(self.client.subchannels, object)
 		self.assertIsInstance(self.client.lists, object)
@@ -61,13 +68,14 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client.sessions, object)
 
 	def test_values_of_fields_inside_client_object(self):
-		self.assertEqual(self.client.url, 'https://test.com')
+		self.assertEqual(self.client.url, 'test')
 		self.assertEqual(self.client.verify, True)
 		self.assertEqual(self.client.token, '')
 		self.assertEqual(self.client.team, 'test')
 		self.assertEqual(self.client.api_user_id, '')
 		self.assertEqual(self.client.api_signature, '')
-		self.assertFalse(self.client.dev_mode)
+		self.assertEqual(self.client.login_time, 0)
+		self.assertEqual(self.client.ttl, 840)
 
 
 class TestBadInitClient(unittest.TestCase):
@@ -78,15 +86,20 @@ class TestBadInitClient(unittest.TestCase):
 
 		with self.assertRaisesRegex(AssertionError, 'team is required parameter'):
 			client.Client(url='')
-
+		
 	def test_init_client_with_incorrect_params(self):
-		t = client.Client(url=True, team={}, api_key=list)
+		with self.assertRaisesRegex(AssertionError, 'url value must be a string'):
+			t = client.Client(url=True, team={}, api_key=list)
+		
+		with self.assertRaisesRegex(AssertionError, 'team value must be a string'):
+			t = client.Client(url='test', team={}, api_key=list)
+		
 
-		self.assertIsInstance(t.url, str)
-		self.assertEqual(t.url, 'True')
+		# self.assertIsInstance(t.url, str)
+		# self.assertEqual(t.url, 'True')
 
-		self.assertIsInstance(t.team, str)
-		self.assertEqual(t.team, '{}')
+		# self.assertIsInstance(t.team, str)
+		# self.assertEqual(t.team, '{}')
 
 
 class TestClientRequestWithToMock(unittest.TestCase):
@@ -94,7 +107,7 @@ class TestClientRequestWithToMock(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
 		cls.client = client.Client(
-			url='test',
+			url='http://test',
 			team='test',
 		)
 

@@ -70,11 +70,13 @@ class TestLoginMethod(unittest.TestCase):
 	def test_login_method_changes_client_token_if_code_is_200(self):
 		self.auth.login(self.login, self.password)
 		self.assertEqual(self.auth.root.token, '123')
+		self.assertGreater(self.auth.root.login_time, 0)
 
 	def test_login_method_changes_client_token_if_code_is_201(self):
 		self.auth.root.r = Mock(return_value=(201, {'token': '123'}))
 		self.auth.login(self.login, self.password)
 		self.assertEqual(self.auth.root.token, '123')
+		self.assertGreater(self.auth.root.login_time, 0)
 
 	def test_login_method_does_not_change_client_token_if_code_is_not_200_201(self):
 		self.auth.root.r = Mock(return_value=(401, {'token': '123'}))

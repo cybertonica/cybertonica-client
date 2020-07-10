@@ -104,19 +104,23 @@ class TestRefreshSessionMethod(unittest.TestCase):
 		self.session.root.r = Mock(return_value=(200, {'token': 'new_value'}))
 		self.session.refresh()
 		self.assertEqual(self.session.root.token, 'new_value')
+		self.assertGreater(self.session.root.login_time, 0)
 
 	def test_refresh_should_not_write_token_if_error(self):
 		self.session.root.r = Mock(return_value=(400, {'token': 'new_value'}))
 		self.session.refresh()
 		self.assertEqual(self.session.root.token, 'old_value')
+		self.assertEqual(self.session.root.login_time, 0)
 	
 	def test_refresh_should_not_write_token_if_token_not_exist(self):
 		self.session.root.r = Mock(return_value=(200, {'abc': 'value'}))
 		self.session.refresh()
 		self.assertEqual(self.session.root.token, 'old_value')
+		self.assertEqual(self.session.root.login_time, 0)
 	
 	def test_refresh_should_not_write_token_if_bad_response_type(self):
 		self.session.root.r = Mock(return_value=(200, 123))
 		self.session.refresh()
 		self.assertEqual(self.session.root.token, 'old_value')
+		self.assertEqual(self.session.root.login_time, 0)
 

@@ -43,6 +43,19 @@ class List:
 
 		url = f'{self.root.url}/api/v1/lists/{id}'
 		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
+	
+	def kinds(self):
+		"""Get kinds of list from system.
+
+		Method:
+				`GET`
+		Endpoint:
+				`/api/v1/kindList`
+		Returns:
+				See CybertonicaAPI.Client.r
+		"""
+		url = f'{self.root.url}/api/v1/kindList'
+		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 
 	def create(self, data):
 		"""Create list in the system.

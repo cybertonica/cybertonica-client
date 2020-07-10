@@ -91,6 +91,28 @@ class TestGetByIdMethod(unittest.TestCase):
 		with self.assertRaisesRegex(AssertionError, 'The ID must not be an empty string'):
 			self.lists.get_by_id('')
 
+class TestGetKindListsMethod(unittest.TestCase):
+
+	def setUp(self):
+		self.lists = List(PropertyMock(
+			url='test_url',
+			team='test_team',
+			signature='test_signature',
+			token='old_value',
+			verify=True,
+			r=Mock(return_value=(200, {'token': '123'}))
+		))
+
+	def test_get_kinds_request(self):
+		self.lists.kinds()
+		self.lists.root.r.assert_called_with(
+			'GET',
+			f'{self.lists.root.url}/api/v1/kindList',
+			body=None,
+			headers=None,
+			verify=self.lists.root.verify
+		)
+
 class TestCreateMethod(unittest.TestCase):
 
 	def setUp(self):

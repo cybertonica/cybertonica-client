@@ -12,6 +12,7 @@ from CybertonicaAPI.cases import Case
 from CybertonicaAPI.settings import Settings
 from CybertonicaAPI.queues import Queue
 from CybertonicaAPI.sessions import Session
+from CybertonicaAPI.tech import Tech
 
 import logging
 import json
@@ -67,7 +68,6 @@ class Client:
 		self.token = ''
 		self.login_time = 0
 		self.ttl = 840 # Session TTL == 14 mins
-		self.service_info = self.__get_service_info()
 		
 		self.auth = Auth(self)
 		self.subchannels = Subchannel(self)
@@ -83,6 +83,7 @@ class Client:
 		self.settings = Settings(self)
 		self.queues = Queue(self)
 		self.sessions = Session(self)
+		self.tech = Tech(self)
 
 	def __create_headers(self):
 		return {
@@ -94,15 +95,6 @@ class Client:
 			if int(time.monotonic() - self.login_time) >= self.ttl:
 				self.log.debug('Refresh token')
 				self.sessions.refresh()
-	
-	def __get_service_info(self):
-		try:
-			status, data = self.r('GET',self.url+'/api/v1/info')
-			return data if status < 400 else {}
-		except Exception as e:
-			self.log.debug('%s',repr(e))
-			return {}
-
 
 	def r(self, method, url=None, body=None, headers=None, files=None, verify=True):
 		"""Main function for the sending requests.

@@ -62,7 +62,7 @@ class Auth:
 			"content-type": "application/json",
 			"Authorization": f"Bearer {self.root.token}"}
 		status_code, data = self.root.r(
-			'POST', url, headers, body=None, verify=self.root.verify)
+			'POST', url, None, headers, None, verify=self.root.verify)
 		if status_code < 400:
 			self.root.token = ''
 			self.root.login_time = 0
@@ -89,7 +89,7 @@ class Auth:
 
 		url = f'{self.root.url}/api/v1/recovery/request?team={team}&email={email}'
 		headers = {"content-type": "application/json"}
-		return self.root.r('GET', url, headers, body=None, verify=self.root.verify)
+		return self.root.r('GET', url, None, headers,None, verify=self.root.verify)
 
 	def register(self, data):
 		"""Create a new user in the system.

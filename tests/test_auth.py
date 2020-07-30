@@ -122,8 +122,9 @@ class TestLogoutMethod(unittest.TestCase):
 		self.auth.root.r.assert_called_with(
 			'POST',
 			f'{self.auth.root.url}/api/v1/logout',
+			None,
 			self.headers,
-			body=None,
+			None,
 			verify=self.auth.root.verify
 		)
 
@@ -158,8 +159,9 @@ class TestRecoveryPasswordMethod(unittest.TestCase):
 		self.auth.root.r.assert_called_with(
 			'GET',
 			f'{self.auth.root.url}/api/v1/recovery/request?team={self.team}&email={self.email}',
+			None,
 			self.headers,
-			body=None,
+			None,
 			verify=self.auth.root.verify
 		)
 	

@@ -4,7 +4,7 @@
 
 Cybertonica API client
 ======================
-[![Python 3.6.9](https://img.shields.io/badge/python-3.6.9-blue.svg)](https://www.python.org/downloads/release/python-369/) ![version](https://img.shields.io/badge/version-0.2-blue) ![Stage: Alpha](https://img.shields.io/badge/stage-alpha-blueviolet)
+[![Python 3.6.9](https://img.shields.io/badge/python-3.6.9-blue.svg)](https://www.python.org/downloads/release/python-369/) ![Python 3.8.2](https://img.shields.io/badge/python-3.8.2-blue.svg)](https://www.python.org/downloads/release/python-382/) ![version](https://img.shields.io/badge/version-0.3-blue) ![Stage: Alpha](https://img.shields.io/badge/stage-alpha-blueviolet)
 
 ## Table of content
 
@@ -181,6 +181,8 @@ client.queues
 client.roles
     delete
     get_all
+    create
+    update
     raw_create
     raw_update
     search_by_id
@@ -202,6 +204,9 @@ client.users
     get_by_id
     remove_role
     update
+client.tech
+    info
+    ping
 ```
 ## For developers
 #### How to run and test it locally

@@ -4,7 +4,7 @@
 
 Cybertonica API client
 ======================
-[![Python 3.6.9](https://img.shields.io/badge/python-3.6.9-blue.svg) ![Python 3.8.2](https://img.shields.io/badge/python-3.8.2-blue.svg) ![version](https://img.shields.io/badge/version-0.3-blue) ![Stage: Alpha](https://img.shields.io/badge/stage-alpha-blueviolet)]
+![Python 3.6.9](https://img.shields.io/badge/python-3.6.9-blue.svg) ![Python 3.8.2](https://img.shields.io/badge/python-3.8.2-blue.svg) ![version](https://img.shields.io/badge/version-0.3-blue) ![Stage: Alpha](https://img.shields.io/badge/stage-alpha-blueviolet)
 
 ## Table of content
 

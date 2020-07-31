@@ -21,7 +21,6 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue("r" in dir(self.client))
 		self.assertFalse("__create_headers" in dir(self.client))
 		self.assertFalse("__is_expired_session" in dir(self.client))
-		self.assertFalse("__get_service_info" in dir(self.client))
 
 	def test_attributes_inside_client_object(self):
 		self.assertTrue(hasattr(self.client, 'url'))
@@ -30,7 +29,6 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'team'))
 		self.assertTrue(hasattr(self.client, 'login_time'))
 		self.assertTrue(hasattr(self.client, 'ttl'))
-		self.assertTrue(hasattr(self.client, 'service_info'))
 		self.assertTrue(hasattr(self.client, 'auth'))
 		self.assertTrue(hasattr(self.client, 'subchannels'))
 		self.assertTrue(hasattr(self.client, 'lists'))
@@ -44,6 +42,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'settings'))
 		self.assertTrue(hasattr(self.client, 'queues'))
 		self.assertTrue(hasattr(self.client, 'sessions'))
+		self.assertTrue(hasattr(self.client, 'tech'))
 
 	def test_types_of_fields_inside_client_object(self):
 		self.assertIsInstance(self.client.url, str)
@@ -51,7 +50,6 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client.token, str)
 		self.assertIsInstance(self.client.team, str)
 		self.assertIsInstance(self.client.login_time, int)
-		self.assertIsInstance(self.client.service_info, dict)
 		self.assertIsInstance(self.client.ttl, int)
 		self.assertIsInstance(self.client.auth, object)
 		self.assertIsInstance(self.client.subchannels, object)

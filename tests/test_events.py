@@ -27,6 +27,7 @@ class TestInitEventClass(unittest.TestCase):
 		self.assertTrue("get_by_queue" in dir(self.events))
 		self.assertTrue("bulk_review" in dir(self.events))
 		self.assertTrue("review" in dir(self.events))
+		self.assertTrue("search")
 
 
 	def test_attributes_inside_auth_object(self):
@@ -191,3 +192,85 @@ class TestSingleReviewMethod(unittest.TestCase):
 			headers=None,
 			verify=self.events.root.verify
 		)
+
+class TestSearchMethod(unittest.TestCase):
+
+	def setUp(self):
+		self.events = Event(PropertyMock(
+			url='test_url',
+			team='test_team',
+			signature='test_signature',
+			token='old_value',
+			verify=True,
+			r=Mock(return_value=(200, {'token': '123'}))
+		))
+		self.channel = "payment"
+		self.sub_channel = "test"
+		self.query = "amount > 0"
+		self.start = 1595241235974
+		self.end = 1596450835974
+		self.limit = 10
+
+	def test_search_request(self):
+		self.events.search(self.channel, self.sub_channel, self.query, self.start, self.end, self.limit)
+		self.events.root.r.assert_called_with(
+			'GET',
+			f'{self.events.root.url}/api/v1.1/events/search?channel={self.channel}&subChannel={self.sub_channel}&query={self.query}&limit={self.limit}&from={self.start}&to={self.end}',
+			body=None,
+			headers=None,
+			verify=self.events.root.verify
+		)
+	
+	def test_search_request_without_limit_value(self):
+		self.events.search(self.channel, self.sub_channel, self.query, self.start, self.end)
+		self.events.root.r.assert_called_with(
+			'GET',
+			f'{self.events.root.url}/api/v1.1/events/search?channel={self.channel}&subChannel={self.sub_channel}&query={self.query}&limit=10&from={self.start}&to={self.end}',
+			body=None,
+			headers=None,
+			verify=self.events.root.verify
+		)
+
+	def test_search_with_incorrect_channel_type(self):
+		with self.assertRaisesRegex(AssertionError, 'Channel name must be a string'):
+			self.events.search(123, self.sub_channel, self.query, self.start, self.end, self.limit)
+
+	def test_search_with_empty_channel(self):
+		with self.assertRaisesRegex(AssertionError, 'Channel name must not be an empty string'):
+			self.events.search("", self.sub_channel, self.query, self.start, self.end, self.limit)
+	
+	def test_search_with_incorrect_subchannel_type(self):
+		with self.assertRaisesRegex(AssertionError, 'Sub-channel name must be a string'):
+			self.events.search(self.channel, 123, self.query, self.start, self.end, self.limit)
+	
+	def test_search_with_incorrect_query_type(self):
+		with self.assertRaisesRegex(AssertionError, 'Query must be a string'):
+			self.events.search(self.channel, self.sub_channel, 123, self.start, self.end, self.limit)
+	
+	def test_search_with_empty_query(self):
+		with self.assertRaisesRegex(AssertionError, 'Query must not be an empty string'):
+			self.events.search(self.channel, self.sub_channel, "", self.start, self.end, self.limit)
+	
+	def test_search_with_incorrect_start_type(self):
+		with self.assertRaisesRegex(AssertionError, 'Start time must be an integer'):
+			self.events.search(self.channel, self.sub_channel, self.query, "123", self.end, self.limit)
+		
+	def test_search_with_incorrect_end_type(self):
+		with self.assertRaisesRegex(AssertionError, 'End time must be an integer'):
+			self.events.search(self.channel, self.sub_channel, self.query, self.start, "123", self.limit)
+	
+	def test_search_with_start_gt_end(self):
+		with self.assertRaisesRegex(AssertionError, 'End time must be greater than start time'):
+			self.events.search(self.channel, self.sub_channel, self.query, self.end, self.start, self.limit)
+	
+	def test_search_with_incorrect_limit(self):
+		with self.assertRaisesRegex(AssertionError, 'Limit must be an integer'):
+			self.events.search(self.channel, self.sub_channel, self.query, self.start, self.end, "123")
+	
+	def test_search_with_limit_gt_1000(self):
+		with self.assertRaisesRegex(AssertionError, 'The range of the limit value is from 1 to 1000'):
+			self.events.search(self.channel, self.sub_channel, self.query, self.start, self.end, 1001)
+	
+	def test_search_with_limit_lt_1(self):
+		with self.assertRaisesRegex(AssertionError, 'The range of the limit value is from 1 to 1000'):
+			self.events.search(self.channel, self.sub_channel, self.query, self.start, self.end, 0)

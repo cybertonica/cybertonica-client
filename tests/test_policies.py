@@ -189,3 +189,101 @@ class TestDeleteMethod(unittest.TestCase):
 	def test_update_with_empty_id_string(self):
 		with self.assertRaisesRegex(AssertionError, 'The ID must not be an empty string'):
 			self.policies.delete('')
+
+class TestExecuteMethod(unittest.TestCase):
+
+	def setUp(self):
+		self.policies = Policy(PropertyMock(
+			url='test_url',
+			team='test_team',
+			signature='test_signature',
+			token='old_value',
+			verify=True,
+			r=Mock(return_value=(200, {'policy': '123'}))
+		))
+		self.channel = "test_channel"
+		self.event_id = "event_id"
+		self.policy_id = "policy_id"
+		self.policy_data = {
+			"aggregations": "test",
+			"channel": "test",
+			"comment": "test",
+			"const": {},
+			"id": 'test',
+			"lastUpdatedAt": 1234567890,
+			"lastUpdatedBy": "test",
+			"name": "test",
+			"parent": "test",
+			"rules": "test",
+			"services": [],
+			"version": 1
+		}
+
+	def test_execute_request_with_policy_id(self):
+		self.policies.execute(self.channel, self.event_id, policy_id=self.policy_id)
+		self.policies.root.r.assert_called_with(
+			'POST',
+			f'{self.policies.root.url}/api/v1/luarepl/single',
+			json.dumps({
+				"channel": self.channel,
+				"eventId": self.event_id,
+				"policy" : {'policy': '123'}
+
+			}),
+			headers=None,
+			verify=self.policies.root.verify
+		)
+
+	def test_execute_request_with_policy_data(self):
+		self.policies.execute(self.channel, self.event_id, policy_data=self.policy_data)
+		self.policies.root.r.assert_called_with(
+			'POST',
+			f'{self.policies.root.url}/api/v1/luarepl/single',
+			json.dumps({
+				"channel": self.channel,
+				"eventId": self.event_id,
+				"policy" : self.policy_data
+			}),
+			headers=None,
+			verify=self.policies.root.verify
+		)
+	
+	def test_execute_with_incorrect_channel_type(self):
+		with self.assertRaisesRegex(AssertionError, 'The channel must be a string'):
+			self.policies.execute(123, self.event_id, policy_id=self.policy_id)
+	
+	def test_execute_with_empty_channel_value(self):
+		with self.assertRaisesRegex(AssertionError, 'The channel must not be an empty string'):
+			self.policies.execute("", self.event_id, policy_id=self.policy_id)
+	
+	def test_execute_with_incorrect_event_id_type(self):
+		with self.assertRaisesRegex(AssertionError, 'The event ID must be a string'):
+			self.policies.execute(self.channel, 123, policy_id=self.policy_id)
+	
+	def test_execute_with_empty_event_id_value(self):
+		with self.assertRaisesRegex(AssertionError, 'The event ID must not be an empty string'):
+			self.policies.execute(self.channel, "", policy_id=self.policy_id)
+	
+	def test_execute_with_incorrect_policy_id_type(self):
+		with self.assertRaisesRegex(AssertionError, 'The policy ID must be a string'):
+			self.policies.execute(self.channel, self.event_id, policy_id=123)
+	
+	def test_execute_with_incorrect_policy_data_type(self):
+		with self.assertRaisesRegex(AssertionError, 'The policy data must be a dict'):
+			self.policies.execute(self.channel, self.event_id, policy_data=123)
+	
+	def test_execute_logic_with_policy_id(self):
+		self.policies.get_by_id = Mock(return_value=(200, {'policy': '123'}))
+		self.policies.execute(self.channel, self.event_id, policy_id=self.policy_id)
+		self.policies.get_by_id.assert_called_with('policy_id')
+		self.policies.root.r.assert_called_with(
+			'POST',
+			f'{self.policies.root.url}/api/v1/luarepl/single', 
+			json.dumps({
+				"channel": "test_channel",
+				"eventId": "event_id",
+				"policy": {"policy": "123"}
+			}),
+			headers=None,
+			verify=self.policies.root.verify
+		)

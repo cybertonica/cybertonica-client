@@ -11,7 +11,7 @@ class Geo:
 	def __init__(self, root):
 		self.root = root
 
-	def get_ip(self, ip):
+	def get(self, ip):
 		"""Checks for ip in the geoip data.
 
 		Args:
@@ -19,7 +19,7 @@ class Geo:
 		Method:
 				`GET`
 		Endpoint:
-				`/api/v1.2/geo`
+				`/api/v1.2/geo/ip/{ip}`
 		Returns:
 				See CybertonicaAPI.Client.r
 		"""

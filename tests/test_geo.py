@@ -22,7 +22,7 @@ class TestInitGeoClass(unittest.TestCase):
 
 	def test_client_object_creation(self):
 		self.assertIsInstance(self.geo, Geo)
-		self.assertTrue("get_ip" in dir(self.geo))
+		self.assertTrue("get" in dir(self.geo))
 
 
 	def test_attributes_inside_auth_object(self):
@@ -45,8 +45,8 @@ class TestGetIpMethod(unittest.TestCase):
 		))
 		self.ip = '8.8.8.8'
 
-	def test_get_ip_request(self):
-		self.geo.get_ip(self.ip)
+	def test_get_request(self):
+		self.geo.get(self.ip)
 		self.geo.root.r.assert_called_with(
 			'GET',
 			f'{self.geo.root.url}/api/v1.2/geo/ip/{self.ip}',
@@ -55,10 +55,10 @@ class TestGetIpMethod(unittest.TestCase):
 			verify=self.geo.root.verify
 		)
 
-	def test_get_ip_with_incorrect_id_type(self):
+	def test_get_with_incorrect_id_type(self):
 		with self.assertRaisesRegex(AssertionError, 'The IP must be a string'):
-			self.geo.get_ip(None)
+			self.geo.get(None)
 	
-	def test_get_ip_with_empty_id_string(self):
+	def test_get_with_empty_id_string(self):
 		with self.assertRaisesRegex(AssertionError, 'The IP must not be an empty string'):
-			self.geo.get_ip('')
+			self.geo.get('')

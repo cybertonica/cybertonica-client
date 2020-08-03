@@ -47,6 +47,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'schema'))
 		self.assertTrue(hasattr(self.client, 'currencies'))
 		self.assertTrue(hasattr(self.client, 'geo'))
+		self.assertTrue(hasattr(self.client, 'reports'))
 
 	def test_types_of_fields_inside_client_object(self):
 		self.assertIsInstance(self.client.url, str)
@@ -73,6 +74,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client.schema, object)
 		self.assertIsInstance(self.client.currencies, object)
 		self.assertIsInstance(self.client.geo, object)
+		self.assertIsInstance(self.client.reports, object)
 
 	def test_values_of_fields_inside_client_object(self):
 		self.assertEqual(self.client.url, 'test')

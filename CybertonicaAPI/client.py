@@ -16,6 +16,7 @@ from CybertonicaAPI.tech import Tech
 from CybertonicaAPI.bi import BusinessIntelligence
 from CybertonicaAPI.schema import Schema
 from CybertonicaAPI.currencies import Currency
+from CybertonicaAPI.geo import Geo
 
 import logging
 import json
@@ -90,6 +91,7 @@ class Client:
 		self.bi = BusinessIntelligence(self)
 		self.schema = Schema(self)
 		self.currencies = Currency(self)
+		self.geo = Geo(self)
 
 	def __create_headers(self):
 		return {

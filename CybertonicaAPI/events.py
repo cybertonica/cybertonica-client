@@ -109,3 +109,35 @@ class Event:
 				See CybertonicaAPI.events.Event.bulk_review
 		"""
 		return self.bulk_review([id], comment, status)
+
+	def search(self, channel, sub_channel, query, start, end, limit = 10):
+		"""Searching events in the channel or channel-sub_channel from `start` to `end`
+			by `query`.
+
+		Args:
+				channel: Channel name
+				sub_channel: Sub-channel name (maybe is empty string)
+				query: Query string (e.g. "amount > 0")
+				start: Time start
+				end: Time end
+				limit: Count of events in the response data (10 by default)
+		Method:
+				`GET`
+		Endpoint:
+				`/api/v1.1/events/search?channel={channel}&subChannel={sub_channel}&query={query}&limit={limit}&from={start}&to={end}`
+		Returns:
+				See CybertonicaAPI.events.Event.bulk_review
+		"""
+		assert isinstance(channel, str), "Channel name must be a string"
+		assert channel, "Channel name must not be an empty string"
+		assert isinstance(sub_channel, str), "Sub-channel name must be a string"
+		assert isinstance(query, str), "Query must be a string"
+		assert query, "Query must not be an empty string"
+		assert isinstance(start, int), "Start time must be an integer"
+		assert isinstance(end, int), "End time must be an integer"
+		assert end > start, "End time must be greater than start time"
+		assert isinstance(limit, int), "Limit must be an integer"
+		assert 1 <= limit and limit <= 1000, "The range of the limit value is from 1 to 1000"
+		
+		url = f'{self.root.url}/api/v1.1/events/search?channel={channel}&subChannel={sub_channel}&query={query}&limit={limit}&from={start}&to={end}'
+		return self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)

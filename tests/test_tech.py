@@ -74,3 +74,25 @@ class TestPingMethod(unittest.TestCase):
 			headers=None,
 			verify=self.tech.root.verify
 		)
+
+class TestPathsMethod(unittest.TestCase):
+
+	def setUp(self):
+		self.tech = Tech(PropertyMock(
+			url='test_url',
+			team='test_team',
+			signature='test_signature',
+			token='old_value',
+			verify=True,
+			r=Mock(return_value=(200, {'token': '123'}))
+		))
+
+	def test_paths_request(self):
+		self.tech.paths()
+		self.tech.root.r.assert_called_with(
+			'GET',
+			f'{self.tech.root.url}/api/v1/paths',
+			body=None,
+			headers=None,
+			verify=self.tech.root.verify
+		)

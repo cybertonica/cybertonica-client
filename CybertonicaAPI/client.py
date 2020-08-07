@@ -13,6 +13,12 @@ from CybertonicaAPI.settings import Settings
 from CybertonicaAPI.queues import Queue
 from CybertonicaAPI.sessions import Session
 from CybertonicaAPI.tech import Tech
+from CybertonicaAPI.bi import BusinessIntelligence
+from CybertonicaAPI.schema import Schema
+from CybertonicaAPI.currencies import Currency
+from CybertonicaAPI.geo import Geo
+from CybertonicaAPI.bins import Bin
+from CybertonicaAPI.reports import Report
 
 import logging
 import json
@@ -84,6 +90,12 @@ class Client:
 		self.queues = Queue(self)
 		self.sessions = Session(self)
 		self.tech = Tech(self)
+		self.bi = BusinessIntelligence(self)
+		self.schema = Schema(self)
+		self.currencies = Currency(self)
+		self.geo = Geo(self)
+		self.bins = Bin(self)
+		self.reports = Report(self)
 
 	def __create_headers(self):
 		return {
@@ -124,7 +136,7 @@ class Client:
 			headers,
 			files,
 			verify
-		)
+		) 
 		assert method, 'method is required parameter'
 		self.__is_expired_session()
 

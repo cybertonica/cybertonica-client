@@ -8,6 +8,7 @@ class Role:
 			root: Object of `CybertonicaAPI.Client`
 
 	Workflow with role updating:
+	```
 		>>> status, data = cbt.roles.create('some_role', ['overview'], {'bi':[1,1,1,1]})
 		>>> status, data
 		>>> 201, {...}
@@ -21,6 +22,7 @@ class Role:
 		>>> cbt.roles.update(data, new_tabs=['lists'], new_permissions={'roles':[1,1,1,1]}) 
 		>>> # update name, tabs and permissions:
 		>>> cbt.roles.update(data, new_name='new', new_tabs=['lists'], new_permissions={'roles':[1,1,1,1]}) 
+	```
 
 	"""
 
@@ -80,11 +82,14 @@ class Role:
 		Args:
 				api: API name
 				tabs: List of tabs ( etc. ["overview","channels"])
-				permissions: List of permissions (etc. [1,1,0,1]} ->
+				permissions: List of permissions
+				```
+					(etc. [1,1,0,1]} ->
 						create: True,
 						read: True,
 						update: False,
 						delete: True)
+				```
 
 		Returns:
 				Dictionary
@@ -138,11 +143,14 @@ class Role:
 				name: Role name
 				tabs: List of tabs ( etc. ["overview","channels"])
 				permissions: Dict of lists, where key is permission name and value
-					is permissions. (etc. {'bi':[1,1,0,1]} -> bi permission, with
+					is permissions.
+				```
+					etc.  {'bi':[1,1,0,1]} -> bi permission, with
 						create: True,
 						read: True,
 						update: False,
-						delete: True)
+						delete: True
+				```
 
 		Method:
 				`POST`
@@ -214,11 +222,14 @@ class Role:
 				new_tabs: New list of tabs ( etc. ["overview","channels"]), empty list if you don't want to change it
 				new_permissions: New permissions. Dict of lists, where key is permission
 					name and value is permissions. Empty dict if you don't want to change it.
-					(etc. {'bi':[1,1,0,1]} -> bi permission, with
+					
+					```
+					etc. {'bi':[1,1,0,1]} -> bi permission, with
 						create: True,
 						read: True,
 						update: False,
-						delete: True)
+						delete: True
+					```
 
 		Method:
 				`POST`

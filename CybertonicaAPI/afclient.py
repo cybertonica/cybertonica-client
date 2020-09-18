@@ -113,7 +113,6 @@ class AFClient:
 				See CybertonicaAPI.Client.r
 		"""
 		assert body, 'Body should not be an empty dictionary'
-		assert status in ['OK', 'CHALLENGE', 'FRAUD'], 'Status value must be either "OK", "CHALLENGE" or "FRAUD"'
 
 		string_body = json.dumps(body)
 		headers = self.__create_headers(self.root.api_user_id,self.root.api_signature,string_body)

@@ -106,17 +106,19 @@ class AFClient:
 		"""Doing a post update with extid.
 
 		Args:
-				extid: value of extid.
+				extid: value of extid or event ID.
 				status: value of status
 
 		Returns:
 				See CybertonicaAPI.Client.r
 		"""
+		assert body, 'Body should not be an empty dictionary'
+
 		string_body = json.dumps(body)
 		headers = self.__create_headers(self.root.api_user_id,self.root.api_signature,string_body)
 		url = self.__create_url_for_update(extid,channel,status)
 		if sess:
 			r = sess.put(url,headers=headers, data=string_body,timeout=timeout, verify=self.root.verify)
-		else:
+		else: 
 			return self.root.r(method='PUT', url=url,headers=headers, body=string_body, verify=self.root.verify)
 		return r.status_code, r.json()

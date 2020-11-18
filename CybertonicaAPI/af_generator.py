@@ -41,6 +41,16 @@ class GeneratorEvents:
 
     # <----------------------------------------------------------------
     def pull_create_event(self, channel, sub_channel, fields):
+        '''
+        Generates a random event for createEvent() for the specified channel and fields.
+
+        Args:
+				channel: your channel (e.g. global)
+				sub_channel: your sub_channel (e.g. sys)
+                fields: 'all' or 'requiered'
+		Returns:
+				Event
+        '''
         if fields == 'requiered':
             self.fields = fields
             r = self.__generate()[channel]
@@ -55,6 +65,16 @@ class GeneratorEvents:
         return r
 
     def pull_update_event(self, extid = None, tx_id = None):
+        '''
+        Generates a random event for updateEvent() for the specified extid or tx_id(v2.1 version).
+        If you are using the v2.2 version, call without parameters.
+
+        Args:
+				extid: External ID of event (only for v2.1 version)
+                tx_id: Transaction ID in the system(only for v2.1 version)
+		Returns:
+				Event (update structure)
+        '''
         r = {
             "comment":"generator comment",
             "code":"generator code"

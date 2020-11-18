@@ -1,3 +1,5 @@
+from CybertonicaAPI.af_generator import GeneratorEvents
+from CybertonicaAPI.af_auditor import AFCheckProtocol
 import hashlib
 import json
 import base64
@@ -15,6 +17,8 @@ class AFClient:
 
 	def __init__(self, root):
 		self.root = root
+		self.box = GeneratorEvents(self.root)
+		self.auditor = AFCheckProtocol(self.root)
 
 	def __create_signature(self, key, raw):
 		"""
@@ -48,13 +52,17 @@ class AFClient:
 		:return: headers for post request
 		:rtype: dict
 		"""
-		post_headers = {'Content-Type': 'application/json',
-						'X-AF-Team': user_id,
-						'Connection': 'keep-alive',
-						'X-AF-Signature': self.__create_signature(key, raw)}
-		return post_headers
+		h = {
+			'Content-Type': 'application/json',
+			'Connection': 'keep-alive'
+		}
+		team_key = 'X-AF-Team' if self.root.af_version == 'v2.2' else 'apiUserId'
+		sign_key = 'X-AF-Signature' if self.root.af_version == 'v2.2' else 'apiSignature'
+		h[team_key] = user_id
+		h[sign_key] = self.__create_signature(key, raw)
+		return h
 
-	def __create_url(self,channel,sub_channel,update_status=None):
+	def __create_url(self,channel, sub_channel):
 		"""
 		Creating url
 
@@ -72,14 +80,14 @@ class AFClient:
 		:return: url for post request
 		:rtype: str
 		"""
-		if update_status:
-			return f"{self.root.af_url}/api/v2.2/events/{channel}?subChannel={sub_channel}&status={update_status}"
-		else:
+		if self.root.af_version == 'v2.2':
 			return f"{self.root.af_url}/api/v2.2/events/{channel}?subChannel={sub_channel}"
+		return f"{self.root.af_url}/api/v2.1/createEvent"
 
-
-	def __create_url_for_update(self, extid, channel, update_status):
-		return f"{self.root.af_url}/api/v2.2/events/{channel}/{extid}?status={update_status}"
+	def __create_url_for_update(self, extid, channel, update_status, version = 'v2.2'):
+		if version == 'v2.2':
+			return f"{self.root.af_url}/api/v2.2/events/{channel}/{extid}?status={update_status}"
+		return f"{self.root.af_url}/api/v2.1/updateEvent"
 
 	def create(self, body,channel=None, sub_channel=None, update_status=None,sess=None, timeout=1):
 		"""Doing a post request to createEvent.
@@ -95,7 +103,12 @@ class AFClient:
 		"""
 		string_body = json.dumps(body)
 		headers = self.__create_headers(self.root.api_user_id, self.root.api_signature, string_body)
-		url = self.__create_url(body['channel'], body['sub_channel'], update_status)
+		if self.root.af_version == 'v2.2':
+			assert channel, 'channel must be present for v2.2'
+			assert sub_channel, 'sub_channel must be present for v2.2'
+		channel = channel if self.root.af_version == 'v2.2' else body['channel']
+		sub_channel = sub_channel if self.root.af_version == 'v2.2' else body['sub_channel']
+		url = self.__create_url(channel, sub_channel)
 		if sess:
 			r = sess.post(url, headers=headers, data=string_body, timeout=timeout, verify=self.root.verify)
 		else:
@@ -116,9 +129,14 @@ class AFClient:
 
 		string_body = json.dumps(body)
 		headers = self.__create_headers(self.root.api_user_id,self.root.api_signature,string_body)
-		url = self.__create_url_for_update(extid,channel,status)
+		url = self.__create_url_for_update(extid,channel,status, self.root.af_version)
 		if sess:
-			r = sess.put(url,headers=headers, data=string_body,timeout=timeout, verify=self.root.verify)
+			if self.root.af_version == 'v2.2':
+				r = sess.put(url,headers=headers, data=string_body,timeout=timeout, verify=self.root.verify)
+			else:
+				r = sess.post(url,headers=headers, data=string_body,timeout=timeout, verify=self.root.verify)
 		else: 
-			return self.root.r(method='PUT', url=url,headers=headers, body=string_body, verify=self.root.verify)
+			if self.root.af_version == 'v2.2':
+				return self.root.r(method='PUT', url=url,headers=headers, body=string_body, verify=self.root.verify)
+			return self.root.r(method='POST', url=url,headers=headers, body=string_body, verify=self.root.verify)
 		return r.status_code, r.json()

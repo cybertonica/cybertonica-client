@@ -4,7 +4,7 @@
 
 Cybertonica API client
 ======================
-![Python 3.6.9](https://img.shields.io/badge/python-3.6.9-blue.svg) ![Python 3.8.2](https://img.shields.io/badge/python-3.8.2-blue.svg) ![version](https://img.shields.io/badge/version-0.5-blue) ![Stage: Alpha](https://img.shields.io/badge/stage-alpha-blueviolet)
+![Python 3.6.9](https://img.shields.io/badge/python-3.6.9-blue.svg) ![Python 3.8.2](https://img.shields.io/badge/python-3.8.2-blue.svg) ![version](https://img.shields.io/badge/version-0.6-blue) ![Stage: Alpha](https://img.shields.io/badge/stage-alpha-blueviolet)
 
 ## Table of content
 
@@ -88,7 +88,6 @@ cbt = Client(url='https://test-test-test.cybertonica.com',team='test')
 # DEBUG:CybertonicaAPI.client:ConnectionError(MaxRetryError("HTTPSConnectionPool(host='test-test-test.cybertonica.com', port=443): Max retries exceeded with url: /api/v1/info (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f3f148b82b0>: Failed to establish a new connection: [Errno -2] Name or service not known',))",),)
 ```
 
-
 Each class or method contains a docstring
 
 ```python
@@ -109,6 +108,70 @@ Main Facade class. Contains all methods.
             verify: True, if you need to ignore SSL certificates.
             dev_mode: True, if you need enable hidden functions.
 ```
+
+## Magic box and Auditor for the Antifraud module
+
+### Box
+
+If you need to perform your personal testing and send "something correct" to the system, you can use this module.
+
+**Box** is a simple structure generator for the AF system.
+
+#### Usage
+
+```python
+>>> from CybertonicaAPI import Client
+>>> cbt = Client(url='https://test.cybertonica.com',team='test')
+>>> cbt.api_user_id = 'api_user_id'
+>>> cbt.api_signature = 'api_signature'
+>>> cbt.af_version = 'v2.2'
+>>> cbt.af.box.pull_create_event('global','sys','requiered') # v2.2 version
+{} # this is the minimum structure for the global channel event and v2.2 version
+>>> cbt.af.create(_, 'global', 'sys'))
+(200, {'action': 'ALLOW', ...})
+>>> cbt.af.box.pull_create_event('global','sys','all')
+{'t': 159198363, 'timezone': 204, 'extid': 'm', 'tid': 'gSUhnEyl', ...} # all keys for the v2.2 version
+>>> cbt.af.create(_, 'global', 'sys'))
+(200, {'action': 'ALLOW', ...})
+```
+
+Box also supports system versioning:
+
+```python
+>>> ...
+>>> cbt.af_version = 'v2.2'
+>>> cbt.af.box.pull_create_event('global','sys','requiered') 
+{}
+>>> cbt.af_version = 'v2.1'
+>>> cbt.af.box.pull_create_event('global','sys','requiered')
+{'channel': 'global', 'sub_channel': 'sys'}
+```
+
+You can find out which channels are supported by a simple command:
+
+```python
+>>> ...
+>>> cbt.af.box.allowed_channels
+dict_keys(['global', 'session', 'payment', 'acquiring', ...])
+```
+
+### Auditor
+
+A module that allows you to perform rapid smoke-testing for an Antifraud system:
+
+```python
+>>> from CybertonicaAPI import Client
+>>> cbt = Client(url='https://test.cybertonica.com',team='test')
+>>> cbt.api_user_id = 'api_user_id'
+>>> cbt.api_signature = 'api_signature'
+>>> cbt.af.auditor.run()
+The test v2.2 protocol (https://test.cybertonica.com:7499) was launched ...
+v2.2 - DONE
+The test v2.1 protocol (https://test.cybertonica.com:7499) was launched ...
+v2.1 - DONE
+```
+
+
 ## Code statuses description
 | Code  | Description |
 | ------------- | ------------- |
@@ -122,6 +185,7 @@ Main Facade class. Contains all methods.
 | 423  | The resource that is being accessed is locked.  |
 | 500  | There was an internal server error.  |
 | 502  | The server was acting as a gateway or proxy and received an invalid response from the upstream server.  |
+
 ## Client structure
 
 ```python
@@ -134,6 +198,11 @@ client.abtests
     stop
     update
 client.af
+    client.af.box
+        pull_create_event
+        pull_update_event
+    client.af.auditor
+        run
     create
     update
 client.auth

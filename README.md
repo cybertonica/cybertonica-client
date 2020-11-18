@@ -109,6 +109,29 @@ Main Facade class. Contains all methods.
             dev_mode: True, if you need enable hidden functions.
 ```
 
+## Antifraud system versioning
+
+Version 2.1 is **deprecated**, but *supported*.
+The client has the opportunity to work with both versions.
+
+To specify the anti fraud version, use the af_version field.
+
+```python
+>>> from CybertonicaAPI import Client
+>>> cbt = Client(url='https://test.cybertonica.com',team='test')
+>>> cbt.api_user_id = 'api_user_id'
+>>> cbt.api_signature = 'api_signature'
+>>> cbt.af_version = 'v2.2'
+>>> cbt.af.create(<parametres>)
+DEBUG:urllib3.connectionpool:https://test.cybertonica.com:7499 "POST /api/v2.2/events/global?subChannel=sys HTTP/1.1" 200 161
+>>> cbt.af_version = 'v2.2'
+>>> cbt.af.create(<parametres>)
+DEBUG:urllib3.connectionpool:https://test.cybertonica.com:7499 "POST /api/v2.1/createEvent HTTP/1.1" 200 144
+```
+
+cbt.af.update() also supports this functionality.
+
+
 ## Magic box and Auditor for the Antifraud module
 
 ### Box

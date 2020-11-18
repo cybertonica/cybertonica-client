@@ -69,6 +69,7 @@ class Client:
 		self.team = str(settings['team'])
 		self.api_user_id = str(settings['api_user_id']) if 'api_user_id' in settings else ''
 		self.api_signature = str(settings['api_signature']) if 'api_signature' in settings else ''
+		self.af_version = str(settings['af_version']) if 'af_version' in settings else 'v2.2'
 		self.verify = bool(settings['verify']) if 'verify' in settings else True
 
 		self.token = ''
@@ -96,6 +97,7 @@ class Client:
 		self.geo = Geo(self)
 		self.bins = Bin(self)
 		self.reports = Report(self)
+
 
 	def __create_headers(self):
 		return {

@@ -48,6 +48,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertTrue(hasattr(self.client, 'currencies'))
 		self.assertTrue(hasattr(self.client, 'geo'))
 		self.assertTrue(hasattr(self.client, 'reports'))
+		self.assertTrue(hasattr(self.client, 'af_version'))
 
 	def test_types_of_fields_inside_client_object(self):
 		self.assertIsInstance(self.client.url, str)
@@ -56,6 +57,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertIsInstance(self.client.team, str)
 		self.assertIsInstance(self.client.login_time, int)
 		self.assertIsInstance(self.client.ttl, int)
+		self.assertIsInstance(self.client.af_version, str)
 		self.assertIsInstance(self.client.auth, object)
 		self.assertIsInstance(self.client.subchannels, object)
 		self.assertIsInstance(self.client.lists, object)
@@ -81,6 +83,7 @@ class TestInitClient(unittest.TestCase):
 		self.assertEqual(self.client.verify, True)
 		self.assertEqual(self.client.token, '')
 		self.assertEqual(self.client.team, 'test')
+		self.assertEqual(self.client.af_version, 'v2.2')
 		self.assertEqual(self.client.api_user_id, '')
 		self.assertEqual(self.client.api_signature, '')
 		self.assertEqual(self.client.login_time, 0)
@@ -102,13 +105,10 @@ class TestBadInitClient(unittest.TestCase):
 		
 		with self.assertRaisesRegex(AssertionError, 'team value must be a string'):
 			t = client.Client(url='test', team={}, api_key=list)
-		
-
-		# self.assertIsInstance(t.url, str)
-		# self.assertEqual(t.url, 'True')
-
-		# self.assertIsInstance(t.team, str)
-		# self.assertEqual(t.team, '{}')
+	
+	def test_init_client_with_incorrect_af_version(self):
+			t = client.Client(url='test',team='test', af_version=123)
+			self.assertEqual(t.af_version, '123')
 
 
 class TestClientRequestWithToMock(unittest.TestCase):

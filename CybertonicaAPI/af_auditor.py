@@ -46,6 +46,9 @@ class AFCheckProtocol:
 			}
 
 	def run(self):
+		'''
+		Launches smoke testing of the anti-fraud system for V2.2 and v2.1 protocols.
+		'''
 		print('The test v2.2 protocol (%s) was launched ...' % self.root.af_url)
 		self.__test_v22()
 		print('v2.2 - DONE')

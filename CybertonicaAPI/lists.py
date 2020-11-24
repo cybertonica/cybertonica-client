@@ -330,7 +330,7 @@ class Item:
 		assert isinstance(data, dict), "The data type must be a dictionary"
 		assert data, "Item data must not be an empty dictionary"
 
-		url = f'{self.root.url}/api/v1/items/{list_id}/{id}'
+		url = f'{self.root.url}/api/v1/items/{list_id}?id={id}'
 		data = json.dumps(data)
 		return self.root.r('PUT', url, data, headers=None, verify=self.root.verify)
 
@@ -352,5 +352,5 @@ class Item:
 		assert isinstance(id, str), "The ID must be a string"
 		assert id, "The ID must not be an empty string"
 
-		url = f'{self.root.url}/api/v1/items/{list_id}/{id}'
+		url = f'{self.root.url}/api/v1/items/{list_id}?id={id}'
 		return self.root.r('DELETE', url, body=None, headers=None, verify=self.root.verify)

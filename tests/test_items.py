@@ -165,7 +165,7 @@ class TestUpdateMethod(unittest.TestCase):
 		self.items.update(self.list_id, self.id, self.data)
 		self.items.root.r.assert_called_with(
 			'PUT',
-			f'{self.items.root.url}/api/v1/items/{self.list_id}/{self.id}',
+			f'{self.items.root.url}/api/v1/items/{self.list_id}?id={self.id}',
 			json.dumps(self.data),
 			headers=None,
 			verify=self.items.root.verify
@@ -213,25 +213,25 @@ class TestDeleteMethod(unittest.TestCase):
 		self.items.delete(self.list_id, self.id)
 		self.items.root.r.assert_called_with(
 			'DELETE',
-			f'{self.items.root.url}/api/v1/items/{self.list_id}/{self.id}',
+			f'{self.items.root.url}/api/v1/items/{self.list_id}?id={self.id}',
 			body=None,
 			headers=None,
 			verify=self.items.root.verify
 		)
 
-	def test_update_with_incorrect_list_id_type(self):
+	def test_delete_with_incorrect_list_id_type(self):
 		with self.assertRaisesRegex(AssertionError, 'List ID must be a string'):
 			self.items.delete(123, self.id)
 	
-	def test_update_with_empty_list_id_string(self):
+	def test_delete_with_empty_list_id_string(self):
 		with self.assertRaisesRegex(AssertionError, 'List ID must not be an empty string'):
 			self.items.delete('', self.id)
 	
-	def test_update_with_incorrect_id_type(self):
+	def test_delete_with_incorrect_id_type(self):
 		with self.assertRaisesRegex(AssertionError, 'The ID must be a string'):
 			self.items.delete(self.list_id, 123)
 	
-	def test_update_with_empty_id_string(self):
+	def test_delete_with_empty_id_string(self):
 		with self.assertRaisesRegex(AssertionError, 'The ID must not be an empty string'):
 			self.items.delete(self.list_id, '')
 

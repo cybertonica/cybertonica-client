@@ -131,12 +131,13 @@ class List:
 		url = f'{self.root.url}/api/v1/lists/{id}'
 		return self.root.r('DELETE', url, body=None, headers=None, verify=self.root.verify)
 
-	def import_csv(self, filename, list_id):
+	def import_csv(self, filename, list_id, delimiter):
 		"""Import CSV file to the list.
 
 		Args:
 				filename: CSV file name or full path (use pwd)
-				list_id: The ID of the list.
+				list_id: The ID of the list
+				delimiter: Separator for the list. Must be ;(semicolon),:(colon) or /t(tab) ONLY
 		Method:
 				`POST`
 		Endpoint:
@@ -146,6 +147,8 @@ class List:
 		"""
 		assert isinstance(filename, str), "File name must be a string"
 		assert filename, "The file name must not be an empty string"
+		assert isinstance(delimiter, str), "Delimiter value must be an string"
+		assert ((delimiter == ';') or (delimiter == ':') or (delimiter == '/t')), "Wrong delimiter"
 		assert '.csv' in filename, "The file must have the CSV extension"
 		assert isinstance(list_id, str), "List ID must be a string"
 		assert list_id, "List ID must not be an empty string"
@@ -153,7 +156,15 @@ class List:
 		files = {
 			'files': open(filename, 'rb')
 		}
-		url = f'{self.root.url}/api/v1/lists/import/{list_id}/csv'
+
+		if delimiter == ';':
+			delimiter = '%3B'
+
+		if delimiter == '/t':
+			delimiter = '%09'
+
+		url = f'{self.root.url}/api/v1/lists/import/{list_id}/csv?delimiter={delimiter}'
+
 		return self.root.r('POST', url, body=None, headers=None, verify=self.root.verify, files=files)
 	
 	def export_csv(self, filename, list_id):
@@ -180,7 +191,7 @@ class List:
 		try:
 			url = f'{self.root.url}/api/v1/lists/export/{list_id}/csv'
 			with open(filename, "wb") as file:
-				status, data  = self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
+				status, data = self.root.r('GET', url, body=None, headers=None, verify=self.root.verify)
 				file.write(data)
 			file.close()
 		except requests.exceptions.HTTPError as err:

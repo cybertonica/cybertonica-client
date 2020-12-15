@@ -228,26 +228,37 @@ class TestImportMethod(unittest.TestCase):
 		))
 		self.id = 'test_id'
 		self.filename = tempfile.mktemp(suffix='.csv', prefix='tmp', dir=None)
+		self.delimiter = ';'
+
+
 	
 	def test_import_csv_with_incorrect_filename_type(self):
 		with self.assertRaisesRegex(AssertionError, 'File name must be a string'):
-			self.lists.import_csv(123,'self.id')
+			self.lists.import_csv(123,'self.id', self.delimiter)
 
 	def test_import_csv_with_incorrect_list_id_type(self):
 		with self.assertRaisesRegex(AssertionError, 'List ID must be a string'):
-			self.lists.import_csv(self.filename,123)
+			self.lists.import_csv(filename=self.filename, list_id=123, delimiter= self.delimiter)
 	
 	def test_import_csv_with_empty_list_id(self):
 		with self.assertRaisesRegex(AssertionError, 'List ID must not be an empty string'):
-			self.lists.import_csv(self.filename,'')
+			self.lists.import_csv(filename=self.filename,list_id='', delimiter= self.delimiter)
 	
 	def test_import_csv_with_incorrect_filename_extension(self):
 		with self.assertRaisesRegex(AssertionError, 'The file must have the CSV extension'):
-			self.lists.import_csv('./tempfile.txt',self.id)
+			self.lists.import_csv(filename='./tempfile.txt',list_id=self.id, delimiter= self.delimiter)
 
 	def test_import_csv_with_empty_filename(self):
 		with self.assertRaisesRegex(AssertionError, 'The file name must not be an empty string'):
-			self.lists.import_csv('',self.id)
+			self.lists.import_csv(filename='',list_id=self.id, delimiter=self.delimiter)
+
+	def test_import_csv_with_incorrect_delimiter_type(self):
+		with self.assertRaisesRegex(AssertionError, "Delimiter value must be an string"):
+			self.lists.import_csv(filename=self.filename, list_id=self.id, delimiter=1)
+
+	def test_import_csv_with_wrong_delimiter(self):
+		with self.assertRaisesRegex(AssertionError, "Wrong delimiter"):
+			self.lists.import_csv(filename='./tempfile.csv', list_id=self.id, delimiter=',')
 
 class TestExportMethod(unittest.TestCase):
 
